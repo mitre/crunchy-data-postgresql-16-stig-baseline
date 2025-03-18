@@ -1,10 +1,10 @@
 control 'SV-261861' do
-  title 'PostgreSQL must provide audit record generation capability for DOD-defined auditable events within all DBMS/database components.'
+  title "PostgreSQL must provide audit record generation capability for #{input('org_name')[:acronym]}-defined auditable events within all DBMS/database components.'
   desc 'Without the capability to generate audit records, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
 Audit records can be generated from various components within PostgreSQL (e.g., process, module). Certain specific application functionalities may be audited as well. The list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records.
 
-DOD has defined the list of events for which PostgreSQL will provide an audit record generation capability as the following: 
+#{input('org_name')[:acronym]} has defined the list of events for which PostgreSQL will provide an audit record generation capability as the following: 
 
 (i) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels);
 
@@ -12,8 +12,8 @@ DOD has defined the list of events for which PostgreSQL will provide an audit re
 
 (iii) All account creation, modification, disabling, and termination actions.
 
-Organizations may define additional events requiring continuous or ad hoc auditing.'
-  desc 'check', %q(Note: The following instructions use the PGLOG environment variables. Refer to supplementary content APPENDIX-I for instructions on configuring PGVER.
+Organizations may define additional events requiring continuous or ad hoc auditing."
+  desc 'check', 'Note: The following instructions use the PGLOG environment variables. Refer to supplementary content APPENDIX-I for instructions on configuring PGVER.
 
 Check PostgreSQL audit logs to determine whether organization-defined auditable events are being audited by the system.
 
@@ -24,12 +24,12 @@ $ psql -c "CREATE TABLE example (id int)"
 $ grep 'AUDIT:.*,CREATE TABLE.*example' ${PGLOG?}/<latest_log>
 $ psql -c 'DROP TABLE example;'
 
-If organization-defined auditable events are not being audited, this is a finding.)
-  desc 'fix', 'Configure PostgreSQL to generate audit records for at least the DOD minimum set of events.
+If organization-defined auditable events are not being audited, this is a finding.)'
+  desc 'fix', "Configure PostgreSQL to generate audit records for at least the DOD minimum set of events.
 
-Using "pgaudit", PostgreSQL can be configured to audit these requests. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit.
+Using \"pgaudit\", PostgreSQL can be configured to audit these requests. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit.
 
-To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C.'
+To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C."
   impact 0.5
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000089-DB-000064'

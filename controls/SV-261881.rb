@@ -51,4 +51,19 @@ $ sudo chmod 0755 /usr/pgsql-${PGVER?}/bin/*'
   tag 'documentable'
   tag cci: ['CCI-001499']
   tag nist: ['CM-5 (6)']
+
+  describe file(input('pg_conf_file')) do
+    it { should be_owned_by input('pg_owner') }
+    its('mode') { should cmp '0600' }
+  end
+
+  describe file(input('pg_hba_conf_file')) do
+    it { should be_owned_by input('pg_owner') }
+    its('mode') { should cmp '0600' }
+  end
+
+  describe file(input('pg_ident_conf_file')) do
+    it { should be_owned_by input('pg_owner') }
+    its('mode') { should cmp '0600' }
+  end
 end
