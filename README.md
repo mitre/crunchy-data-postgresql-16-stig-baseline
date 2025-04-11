@@ -158,6 +158,10 @@ Chef InSpec Resources:
 [top](#table-of-contents)
 ### Testing the Profile Controls
 The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
+#### Testing against a Local Postgres Container
+```bash
+inspec exec ./ --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
+```
 #### Requirements
 All action are conducted using `ruby` (gemstone/programming language). Currently `inspec` 
 commands have been tested with ruby version 3.1.2. A higher version of ruby is not guaranteed to
