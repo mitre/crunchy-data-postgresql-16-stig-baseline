@@ -67,4 +67,10 @@ client_min_messages = error'"
   tag 'documentable'
   tag cci: ['CCI-001314']
   tag nist: ['SI-11 b']
+
+  sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
+
+   describe sql.query('"SHOW log_file_mode;', [input('place_holder')]) do
+      its('output') { should include place_holder }
+    end
 end
