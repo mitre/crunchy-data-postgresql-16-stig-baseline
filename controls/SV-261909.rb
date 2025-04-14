@@ -70,7 +70,7 @@ client_min_messages = error'"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-   describe sql.query('SHOW log_file_mode;',  [input('pg_db')]) do
+  describe sql.query('SHOW log_file_mode;',  [input('pg_db')]) do
     its('output') { should_not match /log|debug|LOG|DEBUG/ }
     its('output') { should match /^error$/i }
     end
