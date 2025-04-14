@@ -91,13 +91,16 @@ inputs:
       - ""
     required: true
     sensitive: true
-
+  
+  #V261909, V-261917
   - name: pg_db
     description: "The database used for stig configuration tests"
     type: string
     value: "stig"
     required: true
-
+  #V-261917
+  - name: pg_db_owner
+    description: ""
   # V-261902
   - name: pg_object_granted_privileges
     description: "Privileges that should be granted to a role for a database object"
