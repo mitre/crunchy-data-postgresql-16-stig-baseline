@@ -49,4 +49,10 @@ $ sudo systemctl reload postgresql-${PGVER?})
   tag cci: ['CCI-001844']
   tag nist: ['AU-3 (2)']
 
+  # log_destination should be syslog, but syslog_facility could be set to LOCAL0 through LOCAL7
+  describe postgres_conf do
+    its('log_destination') { should cmp 'syslog' }
+    its('syslog_facility') { should cmp 'LOCAL0' }
+  end
+
 end
