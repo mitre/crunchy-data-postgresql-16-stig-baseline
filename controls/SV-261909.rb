@@ -69,9 +69,11 @@ client_min_messages = error'"
   tag nist: ['SI-11 b']
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
-
-  describe sql.query('SHOW log_file_mode;',  [input('pg_db')]) do
-    its('output') { should_not match /log|debug|LOG|DEBUG/ }
-    its('output') { should match /^error$/i }
+ 
+  describe sql.query('SHOW client_min_messages;',  [input('pg_db')]) do
+    its('output') { should match (/^error$/i) }
     end
+  describe sql.query('SHOW log_file_mode;',  [input('pg_db')]) do  
+    its('output') { should cmp '0600' }
+  end
 end

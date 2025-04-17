@@ -50,12 +50,12 @@ $ sudo systemctl reload postgresql-${PGVER?})
   tag nist: ['AU-3 (2)']
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
-
+ 
   describe sql.query('SHOW log_destination;', [input('pg_db')]) do
-      its('output') { should include 'syslog' }
+    its('output') { should include 'syslog' }
   end
-
+  
   describe sql.query('SHOW syslog_facility;', [input('pg_db')]) do
-      its('output') { should cmp 'place_holder2' }    
-  end    
+    its('output') { should cmp 'LOCAL0' }    
+  end
 end
