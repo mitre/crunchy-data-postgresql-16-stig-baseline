@@ -192,6 +192,7 @@ inputs:
     value:
       - "/usr/pgsql-16"
       - "/usr/pgsql-16/bin"
+      - "/usr/pgsql-16/include"
       - "/usr/pgsql-16/lib"
       - "/usr/pgsql-16/share"
     required: true
