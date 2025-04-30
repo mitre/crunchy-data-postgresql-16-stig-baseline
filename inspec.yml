@@ -1,4 +1,4 @@
-name: crunchy-data-postgres-16-stig-baseline
+name: crunchy-data-postgresql-16-stig-baseline
 title: "Crunchy Data Postgres 16 Security Technical Implementation Guide ::
   Version 1, Release 1 :: Benchmark Date:  13 Jun 2024"
 maintainer: MITRE SAF Team
@@ -91,13 +91,16 @@ inputs:
       - ""
     required: true
     sensitive: true
-
+  
+  #V261909, V-261917
   - name: pg_db
     description: "The database used for stig configuration tests"
     type: string
     value: "stig"
     required: true
-
+  #V-261917
+  - name: pg_db_owner
+    description: ""
   # V-261902
   - name: pg_object_granted_privileges
     description: "Privileges that should be granted to a role for a database object"

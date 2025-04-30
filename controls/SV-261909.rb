@@ -9,14 +9,14 @@ It is important that detailed error messages be visible only to those who are au
 Administrative users authorized to review detailed error messages typically are the ISSO, ISSM, SA, and DBA. Other individuals or roles may be specified according to organization-specific needs, with appropriate approval.
 
 This calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the DBA is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed and must document what has been discovered.)
-  desc 'check', %q(Note: The following instructions use the PGDATA and PGLOG environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for instructions on configuring PGLOG.
+  desc 'check', "(Note: The following instructions use the PGDATA and PGLOG environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for instructions on configuring PGLOG.
 
 Check PostgreSQL settings and custom database code to determine if detailed error messages are ever displayed to unauthorized individuals.
 
-To check the level of detail for errors exposed to clients, as the DBA (shown here as "postgres"), run the following:
+To check the level of detail for errors exposed to clients, as the DBA (shown here as \"postgres\"), run the following:
 
 $ sudo su - postgres
-$ psql -c "SHOW client_min_messages;"
+$ psql -c \"SHOW client_min_messages;\"
 
 If client_min_messages is not set to error, this is a finding.
 
@@ -31,7 +31,7 @@ As the database administrator, verify the following settings of logs.
 Note: Consult the organization's documentation on acceptable log privileges.
 
 $ sudo su - postgres
-$ psql -c "SHOW log_file_mode;" 
+$ psql -c \"SHOW log_file_mode;\" 
 
 Verify the log files have the set configurations.
 
@@ -51,11 +51,11 @@ If logs are not owned by the database administrator or have permissions that are
 If PostgreSQL is configured to use syslog for logging, consult organization location and permissions for syslog log files. If the logs are not owned by root or have permissions that are not 0600, this is a finding.)
   desc 'fix', 'Note: The following instructions use the PGDATA environment variable. Refer to APPENDIX-F for instructions on configuring PGDATA.
 
-To set the level of detail for error messages exposed to clients, as the DBA (shown here as "postgres"), run the following commands:
+To set the level of detail for error messages exposed to clients, as the DBA (shown here as \"postgres\"), run the following commands:
 
 $ sudo su - postgres
 $ vi ${PGDATA?}/postgresql.conf
-client_min_messages = error'
+client_min_messages = error'"
   impact 0.5
   tag check_id: 'C-65763r1000972_chk'
   tag severity: 'medium'
@@ -67,4 +67,13 @@ client_min_messages = error'
   tag 'documentable'
   tag cci: ['CCI-001314']
   tag nist: ['SI-11 b']
+
+  sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
+ 
+  describe sql.query('SHOW client_min_messages;',  [input('pg_db')]) do
+    its('output') { should match (/^error$/i) }
+    end
+  describe sql.query('SHOW log_file_mode;',  [input('pg_db')]) do  
+    its('output') { should cmp '0600' }
+  end
 end
