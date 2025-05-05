@@ -24,7 +24,7 @@ If PostgreSQL audit records are not written directly to or systematically transf
 
 To ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.
 
-With logging enabled, as the database owner (shown here as "postgres"), configure the following parameters in postgresql.conf:
+With logging enabled, as the database owner {shown here as "postgres"} configure the following parameters in postgresql.conf:
 
 Note: Consult the organization on how syslog facilities are defined in the syslog daemon configuration.
 
@@ -49,10 +49,13 @@ $ sudo systemctl reload postgresql-${PGVER?})
   tag cci: ['CCI-001844']
   tag nist: ['AU-3 (2)']
 
-  # log_destination should be syslog, but syslog_facility could be set to LOCAL0 through LOCAL7
-  describe postgres_conf do
-    its('log_destination') { should cmp 'syslog' }
-    its('syslog_facility') { should cmp 'LOCAL0' }
+  sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
+  
+  describe sql.query('SHOW log_destination;', [input('pg_db')]) do
+    its('output') { should include 'syslog' }
   end
-
+  
+  describe sql.query('SHOW syslog_facility;', [input('pg_db')]) do
+    its('output') { should cmp 'LOCAL0' }    
+  end
 end

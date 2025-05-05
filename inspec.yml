@@ -1,5 +1,6 @@
-name: crunchy-data-postgres-16-stig-baseline
-title: "Crunchy Data Postgres 16 Security Technical Implementation Guide"
+name: crunchy-data-postgresql-16-stig-baseline
+title: "Crunchy Data Postgres 16 Security Technical Implementation Guide ::
+  Version 1, Release 1 :: Benchmark Date:  13 Jun 2024"
 maintainer: MITRE SAF Team
 copyright: MITRE
 copyright_email: saf@groups.mitre.org
@@ -72,8 +73,6 @@ inputs:
     required: true
     sensitive: true
 
-  # V-261859, V-261885, # V-261897, V-261914, V-261862, V-261884, V-261898, V-261888,
-  # V-261924, V-261878
   - name: pg_superusers
     description: "Authorized superuser accounts"
     type: array
@@ -82,7 +81,6 @@ inputs:
     required: true
     sensitive: true
 
-  # V-261890
   - name: pg_users
     description: "authorized postgres user accounts"
     type: array
@@ -90,28 +88,25 @@ inputs:
       - ""
     required: true
     sensitive: true
-
+  
   - name: pg_db
     description: "The database used for stig configuration tests"
     type: string
     value: "stig"
     required: true
 
-  # V-261902
   - name: pg_object_granted_privileges
     description: "Privileges that should be granted to a role for a database object"
     type: string
     value: "arwdDxt"
     required: true
 
-  # V-261902
   - name: pg_object_public_privileges
     description: "Privileges that should be granted to public for a database object"
     type: string
     value: "rw"
     required: true
 
-  # V-261902
   - name: pg_object_exceptions
     description: "List of database objects that should be returned from tests"
     type: array
@@ -119,125 +114,108 @@ inputs:
       - "pg_settings"
     required: true
 
-  # V-261859, V-261890
   - name: pg_replicas
     description: "List of postgres replicas in CIDR notation"
     type: array
     value:
       - ""
 
-  # V-261857
   - name: pg_max_connections
     description: "The maximum allowed number of connections to the postgres instance at any one time."
     type: numeric
     value: 100
 
-  # V-261921
   - name: pg_timezone
     description: "The timezone of the postgres server"
     type: string
     value: "UTC"
 
-  # V-261858, V-261859, V-261890
   - name: approved_auth_methods
     description: "V-261858, V-261859, V-261890 uses this list of approved authentication methods (e.g., per STIG, these are only: gss, sspi, or ldap)"
     type: array
     value: ['gss', 'sspi', 'ldap']
     required: true
     
-  # V-261887
   - name: approved_packages
     description: "V-261887 uses this list of approved postgres-related packages (e.g., postgresql-server.x86_64, postgresql-odbc.x86_64)"
     type: array
     value: []
     required: true
 
-  # V-261886, V-261888
   - name: approved_ext
     description: "V-261886, V-261888 uses this list of approved database extensions"
     type: array
     value: []
     required: true
 
-  # V-261859, V-261885
   - name: windows_runner
     description: "Define if the runner is the runner is window or linux"
     type: Boolean
     value: false
 
-  # SV-261934, SV-261925, SV-261875, SV-261939, SV-261957, SV-261960, 
-  # SV-261947, SV-261942, SV-261956, SV-261952, SV-261864, SV-261951, 
-  # SV-261863, SV-261963, SV-261959, SV-261945, SV-261943
   - name: pg_audit_log_dir
-    description: "The location of the postgres audit log files on the system. e.g., Default for version 12: '/var/lib/pgsql/12/data/log'"
+    description: "The location of the postgres audit log files on the system. e.g., Default for version 16: '/var/lib/pgsql/16/data/log'"
     type: string
-    value: "/var/lib/pgsql/12/data/log"
+    value: "/var/lib/pgsql/16/data/log"
     required: true
 
-  # V-261878
   - name: pgaudit_installation
-    description: "V-261878 uses this location of the pgaudit installation on the system (e.g., /usr/pgsql-12/share/contrib/pgaudit)"
+    description: "V-261878 uses this location of the pgaudit installation on the system (e.g., /usr/pgsql-16/share/contrib/pgaudit)"
     type: string
-    value: "/usr/pgsql-12/share/contrib/pgaudit"
+    value: "/usr/pgsql-16/share/contrib/pgaudit"
     required: true
 
-  # V-261883, V-261880
   - name: pg_shared_dirs
     description: "The location of the Postgres system libraries"
     type: array
     value:
-      - "/usr/pgsql-12"
-      - "/usr/pgsql-12/bin"
-      - "/usr/pgsql-12/lib"
-      - "/usr/pgsql-12/share"
+      - "/usr/pgsql-16"
+      - "/usr/pgsql-16/bin"
+      - "/usr/pgsql-16/include"
+      - "/usr/pgsql-16/lib"
+      - "/usr/pgsql-16/share"
     required: true
 
-  # V-261936, V-261883, V-261935
   - name: pg_version
-    description: "The version of the Postgres software. Change '12.x' to your version (This STIG applies to versions 10.x, 11.x, 12.x, and 13.x)"
+    description: "The version of the Postgres software. Change '16.x' to your version (This STIG applies to versions 16.x)"
     type: string
-    value: "12.9"
+    value: "16.9"
     required: true
 
-  # V-261893, V-261894, V-261880
   - name: pg_data_dir
-    description: "The postgres data directory. e.g., Default for version 12: '/var/lib/pgsql/12/data'"
+    description: "The postgres data directory. e.g., Default for version 16: '/var/lib/pgsql/16/data'"
     type: string
-    value: "/var/lib/pgsql/12/data"
+    value: "/var/lib/pgsql/16/data"
     required: true
 
   - name: pg_conf_file
-    description: "The postgres configuration file. e.g., Default for version 12: '/var/lib/pgsql/12/data/postgresql.conf'"
+    description: "The postgres configuration file. e.g., Default for version 16: '/var/lib/pgsql/16/data/postgresql.conf'"
     type: string
-    value: "/var/lib/pgsql/12/data/postgresql.conf"
+    value: "/var/lib/pgsql/16/data/postgresql.conf"
     required: true
 
-  # V-261908, V-261880
   - name: pg_user_defined_conf
-    description: "An additional postgres configuration file used to override default values. e.g., Default for version 12: '/var/lib/pgsql/12/data/stig-postgresql.conf'"
+    description: "An additional postgres configuration file used to override default values. e.g., Default for version 16: '/var/lib/pgsql/16/data/stig-postgresql.conf'"
     type: string
-    value: "/var/lib/pgsql/12/data/stig-postgresql.conf"
+    value: "/var/lib/pgsql/16/data/stig-postgresql.conf"
     required: true
 
-  # V-261858, V-233518, V-233519, V-261859, V-261893, V-261880, V-261890
   - name: pg_hba_conf_file
-    description: "The postgres hba configuration file. e.g., Default for version 12: '/var/lib/pgsql/12/data/pg_hba.conf'"
+    description: "The postgres hba configuration file. e.g., Default for version 16: '/var/lib/pgsql/16/data/pg_hba.conf'"
     type: string
-    value: "/var/lib/pgsql/12/data/pg_hba.conf"
+    value: "/var/lib/pgsql/16/data/pg_hba.conf"
     required: true
 
-  # V-233518, V-261880, V-261895
   - name: pg_ident_conf_file
-    description: "The location of the `pg_ident_conf` file on the system. e.g., Default for version 12: '/var/lib/pgsql/12/data/pg_ident.conf'"
+    description: "The location of the `pg_ident_conf` file on the system. e.g., Default for version 16: '/var/lib/pgsql/16/data/pg_ident.conf'"
     type: string
-    value: "/var/lib/pgsql/12/data/pg_ident.conf"
+    value: "/var/lib/pgsql/16/data/pg_ident.conf"
     required: true
 
-  # V-261876, V-261877, V-261878
   - name: pg_log_dir
-    description: "The location of the postgres log files on the system. e.g., Default for version 12: '/var/lib/pgsql/12/data/log'"
+    description: "The location of the postgres log files on the system. e.g., Default for version 16: '/var/lib/pgsql/16/data/log'"
     type: string
-    value: "/var/lib/pgsql/12/data/log"
+    value: "/var/lib/pgsql/16/data/log"
     required: true
 
   - name: org_name
@@ -247,7 +225,6 @@ inputs:
       acronym: "DoD"
       full_form: "Department of Defense"
 
-  # V-261937
   - name: min_org_allowed_postgres_version
     desc: "The minimum Postgres version allowed by the organization"
     type: string

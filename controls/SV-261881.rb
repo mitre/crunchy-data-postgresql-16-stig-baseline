@@ -66,4 +66,13 @@ $ sudo chmod 0755 /usr/pgsql-${PGVER?}/bin/*'
     it { should be_owned_by input('pg_owner') }
     its('mode') { should cmp '0600' }
   end
+
+  input('pg_shared_dirs').each do |dir|
+    describe directory(dir) do
+      it { should be_directory }
+      it { should be_owned_by 'root' }
+      it { should be_grouped_into 'root' }
+      its('mode') { should cmp '0755' }
+    end
+  end
 end

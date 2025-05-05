@@ -113,23 +113,27 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 #### Example of tailoring Inputs *While Still Complying* with the security guidance document for the profile:
 
 ```yaml
-  # This file specifies the attributes for the configurable controls
-  # used by the Crunchy Data Postgres 16 STIG profile.
-
-  # Disable controls that are known to consistently have long run times
-  disable_slow_controls: [true or false]
-
-  # A unique list of administrative users
-  admins_list: [admin1, admin2, admin3]
-
-  # List of configuration files for the specific system
-  logging_conf_files: [
-    <dir-path-1>/*.conf
-    <dir-path-2>/*.conf
-  ]
-  
+  windows_runner: false
+  pg_owner: 'testuser'
+  pg_group: ''
+  pg_dba: 'testuser'
+  pg_dba_password: 'testpassword'
+  pg_host: 'localhost'
+  pg_port: '5432'
+  pg_db: 'testdb'
+  pg_version: '16.8'
   ...
 ```
+
+#### Required tailoring
+To be able to connect to the database for testing, some inputs are required, including:
+```yaml
+  pg_dba: 'testuser'
+  pg_dba_password: 'testpassword'
+  pg_db: 'testdb'
+  ...
+```
+These can be added in an inputs file or via command line as specified below.
 
 > [!NOTE]
 >Inputs are variables that are referenced by control(s) in the profile that implement them.
@@ -158,6 +162,24 @@ Chef InSpec Resources:
 [top](#table-of-contents)
 ### Testing the Profile Controls
 The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
+
+#### Testing against a Local Postgres Container
+As a developer or someone wanting to test the profile without an existing database target, there are files available to start up a docker container with a test PostgreSQL 2016 database instance. Starting this requires the runner to have InSpec or CINC Auditor installed, psql, and docker.
+To pull the container image, run:
+```bash
+docker pull
+```
+
+To start the container, run:
+```bash
+docker compose up -D
+```
+
+To run the InSpec profile against the test database, run:
+```bash
+inspec exec ./ --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
+```
+
 #### Requirements
 All action are conducted using `ruby` (gemstone/programming language). Currently `inspec` 
 commands have been tested with ruby version 3.1.2. A higher version of ruby is not guaranteed to
@@ -189,16 +211,14 @@ Ensure the controls are ready to be committed into the repo:
 
 [top](#table-of-contents)
 ## Running the Profile
+Running the profile requires psql to be installed on the runner executing InSpec.
+
 ### Directly from Github
 This option is best used when network connectivity is available and policies permit
 access to the hosting repository.
 
 ```bash
-# Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/crunchy-data-postgres-16-stig-baseline/archive/main.tar.gz --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
-
-# Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/crunchy-data-postgres-16-stig-baseline/archive/master.tar.gz --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+bundle exec [inspec or cinc-auditor] exec https://github.com/mitre/crunchy-data-postgres-16-stig-baseline/archive/main.tar.gz --input-file=<your_inputs_file.yml> --reporter=cli json:<your_results_file.json>
 ```
 
 [top](#table-of-contents)
@@ -217,11 +237,7 @@ cd profiles
 git clone https://github.com/mitre/crunchy-data-postgres-16-stig-baseline.git
 bundle exec [inspec or cinc-auditor] archive crunchy-data-postgres-16-stig-baseline
 
-# Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
-
-# Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>    
+bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> --reporter=cli json:<your_results_file.json> 
 ```
 
 For every successive run, follow these steps to always have the latest version of this profile baseline:
@@ -232,11 +248,7 @@ git pull
 cd ..
 bundle exec [inspec or cinc-auditor] archive crunchy-data-postgres-16-stig-baseline --overwrite
 
-# Using `ssh` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> -t ssh://<hostname>:<port> --sudo --reporter=cli json:<your_results_file.json>
-
-# Using `winrm` transport
-bundle exec [inspec or cinc-auditor] exec <name of generated archive> --target winrm://<hostip> --user '<admin-account>' --password=<password> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>    
+bundle exec [inspec or cinc-auditor] exec <name of generated archive> --input-file=<your_inputs_file.yml> --reporter=cli json:<your_results_file.json>  
 ```
 
 [top](#table-of-contents)
