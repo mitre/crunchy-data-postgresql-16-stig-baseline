@@ -233,5 +233,4 @@ inputs:
   - name: priv_esc
     desc: "Privilege elevation must be used only where necessary and protected from misuse"
     type: string
-    value: "t"
-    required: false
+    value: "|t"
