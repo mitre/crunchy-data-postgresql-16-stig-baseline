@@ -229,3 +229,9 @@ inputs:
     desc: "The minimum Postgres version allowed by the organization"
     type: string
     value: ""
+  
+  - name: priv_esc
+    desc: "Privilege elevation must be used only where necessary and protected from misuse"
+    type: string
+    value: "t"
+    required: false
