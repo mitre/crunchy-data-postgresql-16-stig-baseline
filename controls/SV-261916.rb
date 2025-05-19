@@ -52,11 +52,19 @@ $ psql -c "ALTER FUNCTION <function_name> SECURITY INVOKER"'
     connection_error_regex = Regexp.new(connection_error)
 
     sql_result = sql.query(security_definer_sql, [database])
-    privs = input('priv_esc')
+    function_security_definer_privilege_escalation_allowed = input('function_security_definer_privilege_escalation_allowed')
+
     describe.one do
+
       describe sql_result do
-        if its('output') != ''
-          its('output') { should include privs }
+          its('output') { should eq '' }
+      end
+
+      # If privilege escalation is allowed, 
+      # then control will pass if privilege escalation is possible
+      if function_security_definer_privilege_escalation_allowed
+        describe sql_result do
+            its('output') { should include '|t' }
         end
       end
 

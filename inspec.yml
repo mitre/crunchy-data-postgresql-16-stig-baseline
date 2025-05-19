@@ -230,7 +230,7 @@ inputs:
     type: string
     value: ""
   
-  - name: priv_esc
+  - name: function_security_definer_privilege_escalation_allowed
     desc: "Privilege elevation must be used only where necessary and protected from misuse"
-    type: string
-    value: "|t"
+    type: Boolean
+    value: false
