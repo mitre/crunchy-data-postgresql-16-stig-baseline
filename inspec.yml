@@ -232,5 +232,8 @@ inputs:
   
   - name: function_security_definer_privilege_escalation_allowed
     desc: "Privilege elevation must be used only where necessary and protected from misuse"
-    type: Boolean
-    value: false
+    type: array
+    value: 
+      -  "postgres_pg_stat_activity_autovacuum"
+    
+    required: false
