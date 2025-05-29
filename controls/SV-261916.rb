@@ -66,7 +66,7 @@ $ psql -c "ALTER FUNCTION <function_name> SECURITY INVOKER"'
       input('function_security_definer_privilege_escalation_allowed').each do |element|
         if sql_result.lines include element
           describe sql_result do
-            its('output') { should include '|t' }
+            its('output') { should include (/\|t$/) }
           end
         end
       end
