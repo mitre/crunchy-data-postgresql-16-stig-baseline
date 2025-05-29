@@ -62,8 +62,9 @@ $ psql -c "ALTER FUNCTION <function_name> SECURITY INVOKER"'
 
       # If privilege escalation is allowed, 
       # then control will pass if privilege escalation is possible
+
       input('function_security_definer_privilege_escalation_allowed').each do |element|
-        if sql_result.lines eq element
+        if sql_result.lines include element
           describe sql_result do
             its('output') { should include '|t' }
           end
