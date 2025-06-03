@@ -1,9 +1,9 @@
 module CustomHelpers
   def report_result(description)
     yield
-    puts "#{description}: OK"
+    puts "(#{description}: OK)"
   rescue RSpec::Expectations::ExpectationNotMetError => e
-    puts "#{description}: FAILED"
+    puts "(#{description}: FAILED)"
     raise e
   end
 end
