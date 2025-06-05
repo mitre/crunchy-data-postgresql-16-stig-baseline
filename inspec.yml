@@ -228,3 +228,8 @@ inputs:
     desc: "The minimum Postgres version allowed by the organization"
     type: string
     value: ""
+  
+  - name: function_security_definer_privilege_escalation_allowed
+    desc: "Privilege elevation must be used only where necessary and protected from misuse"
+    type: Boolean
+    value: false
