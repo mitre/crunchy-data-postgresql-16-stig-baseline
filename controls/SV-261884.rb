@@ -54,12 +54,12 @@ $ psql -c "ALTER SCHEMA test OWNER TO bob"'
     if database == 'postgres'
       schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) '\
         'FROM pg_catalog.pg_namespace n '\
-        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
+        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}' AND pg_catalog.pg_get_userbyid(n.nspowner) <> 'pg_database_owner';"
       functions_sql = 'SELECT n.nspname, p.proname, '\
         'pg_catalog.pg_get_userbyid(n.nspowner) '\
         'FROM pg_catalog.pg_proc p '\
         'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace '\
-        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
+        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}' AND pg_catalog.pg_get_userbyid(n.nspowner) <> 'pg_database_owner';"
     else
       schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) '\
         'FROM pg_catalog.pg_namespace n '\
