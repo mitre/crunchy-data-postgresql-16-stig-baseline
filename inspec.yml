@@ -7,7 +7,7 @@ license: Apache-2.0
 summary: InSpec profile aligned to STIG Guidance for Crunchy Data Postgres 16
   Security Technical Implementation Guide
 description: null
-version: 1.1.0
+version: 1.1.1
 supports: []
 depends: []
 inspec_version: ">= 4.0"
