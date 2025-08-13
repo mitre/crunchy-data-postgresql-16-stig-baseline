@@ -36,7 +36,7 @@ $ psql -c "ALTER FUNCTION <function_name> SECURITY INVOKER"'
   tag 'documentable'
   tag cci: ['CCI-002233']
   tag nist: ['AC-6 (8)']
-  
+
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
   pg_db = input('pg_db')
 
