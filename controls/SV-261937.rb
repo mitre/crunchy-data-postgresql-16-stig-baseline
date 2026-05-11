@@ -34,7 +34,7 @@ If PostgreSQL is not at the latest version and the evaluated version has CVEs (I
   tag gid: 'V-261937'
   tag rid: 'SV-261937r1000974_rule'
   tag stig_id: 'CD16-00-009300'
-  tag gtitle: 'SRG-APP-000456-DB-000400'
+  tag gtitle: 'SRG-APP-001035-DB-000323'
   tag fix_id: 'F-65699r1000815_fix'
   tag 'documentable'
   tag cci: ['CCI-003376']
