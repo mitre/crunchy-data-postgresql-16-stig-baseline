@@ -117,13 +117,11 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
 
   # For OpenSSL 1.x: 'fips' appears in version string
   # For OpenSSL 3.x: a FIPS provider must be active
-  openssl_version = command('openssl version').stdout
-
-  if openssl_version.match?(/OpenSSL 3\./)
+  describe.one do
     describe command('openssl list -providers') do
       its('stdout') { should match /fips[\s\S]*?status: active/ }
     end
-  else
+
     describe command('openssl version') do
       its('stdout') { should include 'fips' }
     end
