@@ -111,8 +111,14 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
   end
 
   # Check OS-level FIPS is enabled
-  describe command('sysctl crypto.fips_enabled') do
-    its('stdout') { should match /crypto\.fips_enabled\s*=\s*1/ }
+  describe.one do
+    describe command('sysctl crypto.fips_enabled') do
+      its('stdout') { should match /crypto\.fips_enabled\s*=\s*1/ }
+    end
+
+    describe command('fips-mode-setup --check') do
+      its('stdout') { should match /FIPS mode is enabled/i }
+    end
   end
 
   # For OpenSSL 1.x: 'fips' appears in version string
