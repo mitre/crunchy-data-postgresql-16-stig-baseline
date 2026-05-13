@@ -125,7 +125,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
   # For OpenSSL 3.x: a FIPS provider must be active
   describe.one do
     describe command('openssl list -providers') do
-      its('stdout') { should match /fips[\s\S]*?status: active/ }
+      its('stdout') { should match /^fips$(?:\n^[ \t]+.*$)*\n^[ \t]+status:\s*active$/m }
     end
 
     describe command('openssl version') do
