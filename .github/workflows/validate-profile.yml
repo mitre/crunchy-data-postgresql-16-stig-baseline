@@ -1,0 +1,103 @@
+name: Validate Profile against PostgreSQL 16
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate (vanilla)
+    runs-on: ubuntu-latest
+    env:
+      LC_ALL: "en_US.UTF-8"
+      PLATFORM: "postgres16"
+      SUITE: "vanilla"
+    steps:
+      - name: Install needed packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+
+      - name: Disable ri and rdoc
+        run: 'echo "gem: --no-ri --no-rdoc" >> ~/.gemrc'
+
+      - name: Run Bundle Install
+        run: bundle install
+
+      - name: Print CINC Auditor version
+        run: bundle exec cinc-auditor version
+
+      - name: Vendor the Profile
+        run: bundle exec cinc-auditor vendor . --overwrite
+
+      - name: Install PostgreSQL 16
+        run: |
+          sudo apt-get install -y wget gnupg2 lsb-release
+          echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/pgdg.gpg
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16
+
+      - name: Configure PostgreSQL for testing
+        run: |
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'testpassword';"
+          sudo -u postgres psql -c "CREATE DATABASE testdb;"
+          sudo sed -i "s/^#\?password_encryption.*/password_encryption = 'scram-sha-256'/" /etc/postgresql/16/main/postgresql.conf
+          sudo sed -i "s/^local\s\+all\s\+all\s\+peer/local   all   all   scram-sha-256/" /etc/postgresql/16/main/pg_hba.conf
+          echo "host all all 127.0.0.1/32 scram-sha-256" | sudo tee -a /etc/postgresql/16/main/pg_hba.conf
+          sudo systemctl restart postgresql
+
+      - name: Create results directory
+        run: mkdir -p spec/results
+
+      - name: Run the InSpec profile
+        continue-on-error: true
+        run: |
+          sudo bundle exec cinc-auditor exec . \
+            --input-file ./inputs_postgres16_ci.yml \
+            --reporter cli json:spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
+            --enhanced-outcomes
+
+      - name: Save results summary
+        continue-on-error: true
+        uses: mitre/saf_action@v1.5.2
+        with:
+          command_string: "view summary -j -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
+
+      - name: Save Test Result JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PLATFORM }}_${{ env.SUITE }}
+          path: spec/results/
+
+      - name: Display results summary
+        uses: mitre/saf_action@v1.5.2
+        with:
+          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json"
+
+      - name: Generate Markdown Summary
+        continue-on-error: true
+        run: |
+          cat spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json | python3 markdown-summary.py > spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md
+          cat spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Ensure the scan meets our vanilla threshold
+        uses: mitre/saf_action@v1.5.2
+        with:
+          command_string: "validate threshold -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -F vanilla.threshold.yml"
