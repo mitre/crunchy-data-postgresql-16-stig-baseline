@@ -69,7 +69,7 @@ jobs:
       - name: Run the InSpec profile
         continue-on-error: true
         run: |
-          bundle exec cinc-auditor exec . \
+          sudo bundle exec cinc-auditor exec . \
             --input-file ./inputs_postgres16_ci.yml \
             --reporter cli json:spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
             --enhanced-outcomes
