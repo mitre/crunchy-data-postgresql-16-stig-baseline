@@ -49,7 +49,7 @@ For more information on pg_hba.conf, refer to the official documentation: https:
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000148-DB-000103'
   tag gid: 'V-261890'
-  tag rid: 'SV-261890r1000675_rule'
+  tag rid: 'SV-261890r1051115_rule'
   tag stig_id: 'CD16-00-003600'
   tag fix_id: 'F-65652r1000674_fix'
   tag cci: ['CCI-000764']

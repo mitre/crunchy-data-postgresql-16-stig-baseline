@@ -41,7 +41,7 @@ SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE user LIKE '%'"
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000389-DB-000372'
   tag gid: 'V-261927'
-  tag rid: 'SV-261927r1000786_rule'
+  tag rid: 'SV-261927r1050788_rule'
   tag stig_id: 'CD16-00-008100'
   tag fix_id: 'F-65689r1000785_fix'
   tag cci: ['CCI-002038', 'CCI-004895']

@@ -22,7 +22,7 @@ Any files (for example: extra configuration files) created in ${PGDATA?} must be
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000243-DB-000374'
   tag gid: 'V-261904'
-  tag rid: 'SV-261904r1000717_rule'
+  tag rid: 'SV-261904r1137658_rule'
   tag stig_id: 'CD16-00-005600'
   tag fix_id: 'F-65666r1000716_fix'
   tag cci: ['CCI-001090']

@@ -1,10 +1,10 @@
-control 'SV-261937' do
+control 'SV-283674' do
   title 'PostgreSQL products must be a version supported by the vendor.'
-  desc 'Unsupported commercial and database systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.
+  desc 'Unsupported software and systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.
 
-Systems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.
+Software and systems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.
 
-When maintenance updates and patches are no longer available, the database software is no longer considered supported and should be upgraded or decommissioned.'
+When maintenance updates and patches are no longer available, software is no longer considered supported and should be upgraded or decommissioned.'
   desc 'check', 'If new packages are available for PostgreSQL, they can be reviewed in the package manager appropriate for the server operating system:
 
 To list the version of installed PostgreSQL using psql:
@@ -24,18 +24,16 @@ All versions of PostgreSQL are listed here: http://www.postgresql.org/support/ve
 
 All security-relevant software updates for PostgreSQL are listed here: http://www.postgresql.org/support/security/
 
-If PostgreSQL is not at the latest version, this is a finding.
-
-If PostgreSQL is not at the latest version and the evaluated version has CVEs (IAVAs), this is a CAT I finding.'
-  desc 'fix', 'Institute and adhere to policies and procedures to ensure that patches are consistently applied to PostgreSQL within the time allowed.'
+If PostgreSQL is not at the latest version, this is a finding.'
+  desc 'fix', 'Upgrade or install a version of the product supported by the vendor.'
   impact 0.7
-  tag check_id: 'C-65791r1000974_chk'
+  tag check_id: 'C-88239r1193279_chk'
   tag severity: 'high'
-  tag gid: 'V-261937'
-  tag rid: 'SV-261937r1000974_rule'
+  tag gid: 'V-283674'
+  tag rid: 'SV-283674r1193281_rule'
   tag stig_id: 'CD16-00-009300'
   tag gtitle: 'SRG-APP-001035-DB-000323'
-  tag fix_id: 'F-65699r1000815_fix'
+  tag fix_id: 'F-88144r1193280_fix'
   tag 'documentable'
   tag cci: ['CCI-003376']
   tag nist: ['SA-22 a']
