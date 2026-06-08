@@ -11,6 +11,7 @@
 /test/version_tmp/
 /tmp/
 spec/results/**
+!spec/results/.gitkeep
 .kitchen
 .kitchen.local.yml
 Gemfile.lock
