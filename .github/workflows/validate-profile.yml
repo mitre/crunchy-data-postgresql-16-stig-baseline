@@ -48,21 +48,40 @@ jobs:
 
       - name: Install PostgreSQL 16
         run: |
-          sudo apt-get install -y wget gnupg2 lsb-release
-          echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/pgdg.gpg
-          sudo apt-get update
+          sudo apt-get install -y postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
           sudo apt-get install -y postgresql-16
 
-      - name: Start and configure PostgreSQL for testing
+      - name: Setup and start PostgreSQL 16
         run: |
+          # Ensure the cluster exists and is running (peer auth by default)
+          sudo pg_ctlcluster 16 main start || true
           sudo systemctl start postgresql
+
+          # Set password and create test database (peer auth works for sudo -u postgres)
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'testpassword';"
           sudo -u postgres psql -c "CREATE DATABASE testdb;"
+
+          # Configure pg_hba.conf: allow password auth over TCP on localhost
+          # Replace the default peer/ident lines with trust-nothing-by-default,
+          # then add scram-sha-256 for local socket and TCP localhost
+          sudo tee /etc/postgresql/16/main/pg_hba.conf > /dev/null <<'PGEOF'
+local   all   postgres                peer
+local   all   all                     scram-sha-256
+host    all   all       127.0.0.1/32  scram-sha-256
+host    all   all       ::1/128       scram-sha-256
+PGEOF
+
+          # Ensure PostgreSQL listens on localhost
+          sudo sed -i "s/^#\?listen_addresses.*/listen_addresses = 'localhost'/" /etc/postgresql/16/main/postgresql.conf
           sudo sed -i "s/^#\?password_encryption.*/password_encryption = 'scram-sha-256'/" /etc/postgresql/16/main/postgresql.conf
-          sudo sed -i "s/^local\s\+all\s\+all\s\+peer/local   all   all   scram-sha-256/" /etc/postgresql/16/main/pg_hba.conf
-          echo "host all all 127.0.0.1/32 scram-sha-256" | sudo tee -a /etc/postgresql/16/main/pg_hba.conf
+
+          # Restart to apply config changes
           sudo systemctl restart postgresql
+
+          # Verify connectivity
+          pg_isready -h 127.0.0.1 -p 5432
+          PGPASSWORD=testpassword psql -h 127.0.0.1 -U postgres -d testdb -c "SELECT version();"
 
       - name: Create results directory
         run: mkdir -p spec/results
