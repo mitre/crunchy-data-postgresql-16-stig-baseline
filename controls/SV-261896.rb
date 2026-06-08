@@ -25,72 +25,17 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
   tag severity: 'high'
   tag gtitle: 'SRG-APP-000179-DB-000114'
   tag gid: 'V-261896'
-  tag rid: 'SV-261896r1193213_rule'
+  tag rid: 'SV-261896r1000693_rule'
   tag stig_id: 'CD16-00-004400'
-  tag fix_id: 'F-65658r1193212_fix'
+  tag fix_id: 'F-65658r1000692_fix'
   tag cci: ['CCI-000803']
   tag nist: ['IA-7']
 
-  sysctl_exists          = command('sysctl').exist?
-  fips_mode_setup_exists = command('fips-mode-setup').exist?
-  openssl_exists         = command('openssl').exist?
+  describe command('openssl') do
+    it { should exist }
+  end
 
-  if sysctl_exists || fips_mode_setup_exists
-    # Check OS-level FIPS using whichever tool is available.
-    # sysctl is preferred because it does not require elevated privileges.
-    # fips-mode-setup requires sudo — ensure 'inspec exec' is run with --sudo.
-    if sysctl_exists
-      describe command('sysctl crypto.fips_enabled') do
-        its('stdout') { should match /crypto\.fips_enabled\s*=\s*1/ }
-      end
-    else
-      describe command('fips-mode-setup --check') do
-        its('stdout') { should include 'FIPS mode is enabled' }
-      end
-    end
-
-    # Check that the OpenSSL library is FIPS-compliant.
-    # Verification method differs by version because OpenSSL changed its FIPS
-    # architecture between 1.x (built-in, reported in version string) and 3.x
-    # (separate provider model). OpenSSL 4.x has no documented FIPS check yet.
-    if openssl_exists
-      openssl_version = command('openssl version').stdout
-
-      if openssl_version.match?(/OpenSSL 1\./)
-        # OpenSSL 1.x includes 'fips' directly in the version string when
-        # built with FIPS support.
-        describe command('openssl version') do
-          its('stdout') { should include 'fips' }
-        end
-      elsif openssl_version.match?(/OpenSSL 3\./)
-        # OpenSSL 3.x uses a provider model; a FIPS provider must be listed
-        # and have a status of 'active'.
-        describe command('openssl list -providers') do
-          its('stdout') { should match /fips[\s\S]*?status: active/ }
-        end
-      else
-        # OpenSSL 4.x or an unrecognized version — no documented FIPS
-        # verification method exists yet. Manual review required.
-        describe 'OpenSSL FIPS compliance' do
-          skip "Manual review required: OpenSSL version '#{openssl_version.strip}' is not 1.x or 3.x. "\
-               'No documented automated method exists for verifying FIPS compliance on this version. '\
-               'Verify manually that the installed OpenSSL is FIPS 140-2/140-3 approved.'
-        end
-      end
-    else
-      # OpenSSL is not present. Another FIPS-validated cryptographic module
-      # may be in use — this cannot be verified automatically.
-      describe 'OpenSSL FIPS compliance' do
-        skip 'Manual review required: OpenSSL is not installed. '\
-             'Verify manually that a FIPS 140-2/140-3 validated cryptographic module is installed and active.'
-      end
-    end
-  else
-    # Neither sysctl nor fips-mode-setup is available, which means this is
-    # likely a non-Linux system. FIPS status cannot be checked automatically.
-    describe 'FIPS enablement' do
-      skip 'Manual review required: Neither sysctl nor fips-mode-setup is available on this system. '\
-           'Verify manually that FIPS 140-2/140-3 validated cryptographic modules are enabled.'
-    end
+  describe command('openssl version') do
+    its('stdout') { should include 'fips' }
   end
 end
