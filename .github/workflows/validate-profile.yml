@@ -62,15 +62,13 @@ jobs:
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'testpassword';"
           sudo -u postgres psql -c "CREATE DATABASE testdb;"
 
-          # Configure pg_hba.conf: allow password auth over TCP on localhost
-          # Replace the default peer/ident lines with trust-nothing-by-default,
-          # then add scram-sha-256 for local socket and TCP localhost
-          sudo tee /etc/postgresql/16/main/pg_hba.conf > /dev/null <<'PGEOF'
-local   all   postgres                peer
-local   all   all                     scram-sha-256
-host    all   all       127.0.0.1/32  scram-sha-256
-host    all   all       ::1/128       scram-sha-256
-PGEOF
+          # Configure pg_hba.conf: peer for postgres user, scram-sha-256 for TCP
+          printf '%s\n' \
+            'local   all   postgres                peer' \
+            'local   all   all                     scram-sha-256' \
+            'host    all   all       127.0.0.1/32  scram-sha-256' \
+            'host    all   all       ::1/128       scram-sha-256' \
+            | sudo tee /etc/postgresql/16/main/pg_hba.conf > /dev/null
 
           # Ensure PostgreSQL listens on localhost
           sudo sed -i "s/^#\?listen_addresses.*/listen_addresses = 'localhost'/" /etc/postgresql/16/main/postgresql.conf
