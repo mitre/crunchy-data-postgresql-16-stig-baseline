@@ -2,7 +2,7 @@ control 'SV-261919' do
   title 'PostgreSQL must provide a warning to appropriate support staff when allocated audit record storage volume reaches 75 percent of maximum audit record storage capacity.'
   desc 'Organizations are required to use a central log management system so under normal conditions, the audit space allocated to PostgreSQL on its own server will not be an issue. However, space will still be required on the PostgreSQL server for audit records in transit, and, under abnormal conditions, this could fill up. Since a requirement exists to halt processing upon audit failure, a service outage would result.
 
-If support personnel are not notified immediately upon storage volume utilization reaching 75%, they are unable to plan for storage capacity expansion. 
+If support personnel are not notified immediately upon storage volume utilization reaching 75%, they are unable to plan for storage capacity expansion.
 
 The appropriate support staff include, at a minimum, the information system security officer (ISSO) and the database administrator (DBA)/system administrator (SA).'
   desc 'check', 'Review system configuration.

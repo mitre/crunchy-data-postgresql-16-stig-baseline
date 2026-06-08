@@ -9,20 +9,20 @@ $ psql -c "SHOW port"
 If the currently defined port configuration is deemed prohibited, this is a finding.'
   desc 'fix', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-To change the listening port of the database, as the database administrator, change the following setting in postgresql.conf: 
+To change the listening port of the database, as the database administrator, change the following setting in postgresql.conf:
 
-$ sudo su - postgres 
-$ vi $PGDATA/postgresql.conf 
+$ sudo su - postgres
+$ vi $PGDATA/postgresql.conf
 
-Change the port parameter to the desired port. 
+Change the port parameter to the desired port.
 
-Restart the database: 
+Restart the database:
 
-$ sudo systemctl restart postgresql-${PGVER?} 
+$ sudo systemctl restart postgresql-${PGVER?}
 
-Note: psql uses the port 5432 by default. This can be changed by specifying the port with psql or by setting the PGPORT environment variable: 
+Note: psql uses the port 5432 by default. This can be changed by specifying the port with psql or by setting the PGPORT environment variable:
 
-$ psql -p 5432 -c "SHOW port" 
+$ psql -p 5432 -c "SHOW port"
 $ export PGPORT=5432'
   impact 0.5
   tag severity: 'medium'

@@ -71,7 +71,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  log_line_prefix_escapes = %w(%m %u %d %s)
+  log_line_prefix_escapes = %w[%m %u %d %s]
   log_line_prefix_escapes.each do |escape|
     describe sql.query('SHOW log_line_prefix;', [input('pg_db')]) do
       its('output') { should include escape }
@@ -79,6 +79,6 @@ $ sudo systemctl reload postgresql-${PGVER?}"
   end
 
   describe sql.query('SHOW log_hostname;', [input('pg_db')]) do
-    its('output') { should match /(on|true)/i }
+    its('output') { should match(/(on|true)/i) }
   end
 end

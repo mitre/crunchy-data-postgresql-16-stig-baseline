@@ -9,21 +9,21 @@ $ sudo su - postgres
 $ psql -c "SHOW pgaudit.log"
 
 If pgaudit.log does not contain, "ddl, write, role", this is a finding.'
-  desc 'fix', "Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER. 
+  desc 'fix', "Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-The DBMS (PostgreSQL) can be configured to audit these requests using pgaudit. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit. 
+The DBMS (PostgreSQL) can be configured to audit these requests using pgaudit. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit.
 
 With pgaudit installed the following configurations can be made:
 
-$ sudo su - postgres  
+$ sudo su - postgres
 
-$ vi ${PGDATA?}/postgresql.conf  
+$ vi ${PGDATA?}/postgresql.conf
 
-Add the following parameters (or edit existing parameters):  
+Add the following parameters (or edit existing parameters):
 
-pgaudit.log = 'ddl, write, role'  
+pgaudit.log = 'ddl, write, role'
 
-As the system administrator, reload the server with the new configuration:  
+As the system administrator, reload the server with the new configuration:
 
 $ sudo systemctl reload postgresql- ${PGVER?}"
   impact 0.5
@@ -38,7 +38,7 @@ $ sudo systemctl reload postgresql- ${PGVER?}"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  pgaudit_types = %w(ddl role write)
+  pgaudit_types = %w[ddl role write]
 
   pgaudit_types.each do |type|
     describe sql.query('SHOW pgaudit.log;', [input('pg_db')]) do

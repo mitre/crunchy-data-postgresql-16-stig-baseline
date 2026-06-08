@@ -56,11 +56,11 @@ $ sudo systemctl reload postgresql-${PGVER?})
   if file(input('pg_audit_log_dir')).exist?
 
     describe sql.query('SET ROLE pgauditrolefailuretest;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"does not exist\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*role \"\"pgauditrolefailuretest\"\" does not exist.*$/ }
+      its('stdout') { should match(/^.*role ""pgauditrolefailuretest"" does not exist.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

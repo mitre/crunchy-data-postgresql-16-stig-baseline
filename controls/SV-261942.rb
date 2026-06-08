@@ -61,15 +61,15 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('CREATE ROLE fooaudit; GRANT CONNECT ON DATABASE postgres TO fooaudit; REVOKE CONNECT ON DATABASE postgres FROM fooaudit;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"GRANT CONNECT ON DATABASE postgres TO\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*fooaudit.*$/ }
+      its('stdout') { should match(/^.*fooaudit.*$/) }
     end
 
     describe command("grep -r \"REVOKE CONNECT ON DATABASE postgres FROM\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*fooaudit.*$/ }
+      its('stdout') { should match(/^.*fooaudit.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

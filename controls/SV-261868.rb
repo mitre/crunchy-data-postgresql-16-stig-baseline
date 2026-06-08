@@ -3,7 +3,7 @@ control 'SV-261868' do
 	occurred.'
   desc 'Information system auditing capability is critical for accurate forensic analysis. Without establishing where events occurred, it is impossible to establish, correlate, and investigate the events relating to an incident.
 
-In order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know where events occurred, such as application components, modules, session identifiers, filenames, host names, and functionality. 
+In order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know where events occurred, such as application components, modules, session identifiers, filenames, host names, and functionality.
 
 Associating information about where the event occurred within the application provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application.'
   desc 'check', 'As the database administrator (shown here as "postgres"), check the current log_line_prefix setting by running the following SQL:
@@ -46,7 +46,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  log_line_prefix_escapes = %w(%m %u %d %s)
+  log_line_prefix_escapes = %w[%m %u %d %s]
 
   log_line_prefix_escapes.each do |escape|
     describe sql.query('SHOW log_line_prefix;', [input('pg_db')]) do

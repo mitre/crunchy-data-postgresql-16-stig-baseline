@@ -32,7 +32,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.4"
 
       - name: Disable ri and rdoc
         run: 'echo "gem: --no-ri --no-rdoc" >> ~/.gemrc'
@@ -87,7 +87,7 @@ jobs:
       - name: Run the InSpec profile
         continue-on-error: true
         run: |
-          sudo bundle exec cinc-auditor exec . \
+          sudo env "PATH=$PATH" bundle exec cinc-auditor exec . \
             --input-file ./inputs_postgres16_ci.yml \
             --reporter cli json:spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
             --enhanced-outcomes

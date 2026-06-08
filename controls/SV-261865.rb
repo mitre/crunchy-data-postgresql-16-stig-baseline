@@ -38,6 +38,6 @@ For session logging, using pgaudit is recommended. For instructions on how to se
   end
 
   describe sql.query('SHOW log_destination;', [input('pg_db')]) do
-    its('output') { should match /stderr|syslog/i }
+    its('output') { should match(/stderr|syslog/i) }
   end
 end

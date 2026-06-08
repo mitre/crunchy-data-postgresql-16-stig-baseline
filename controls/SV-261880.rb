@@ -7,29 +7,29 @@ Applications providing tools to interface with audit data will leverage user per
 Audit tools include, but are not limited to, vendor-provided and open source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators.'
   desc 'check', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-As the database administrator (shown here as "postgres"), verify the permissions of PGDATA: 
+As the database administrator (shown here as "postgres"), verify the permissions of PGDATA:
 
-$ sudo su - postgres 
-$ ls -la ${PGDATA?} 
+$ sudo su - postgres
+$ ls -la ${PGDATA?}
 
-If PGDATA is not owned by postgres:postgres or if files can be accessed by others, this is a finding. 
+If PGDATA is not owned by postgres:postgres or if files can be accessed by others, this is a finding.
 
-As the system administrator, verify the permissions of pgsql shared objects and compiled binaries: 
+As the system administrator, verify the permissions of pgsql shared objects and compiled binaries:
 
 $ ls -la /usr/pgsql-${PGVER?}/bin
 $ ls -la /usr/pgsql-${PGVER?}/include
 $ ls -la /usr/pgsql-${PGVER?}/lib
-$ ls -la /usr/pgsql-${PGVER?}/share 
+$ ls -la /usr/pgsql-${PGVER?}/share
 
 If any of these are not owned by root:root, this is a finding.'
   desc 'fix', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-As the system administrator, change the permissions of PGDATA: 
+As the system administrator, change the permissions of PGDATA:
 
-$ sudo chown -R postgres:postgres ${PGDATA?} 
-$ sudo chmod 700 ${PGDATA?} 
+$ sudo chown -R postgres:postgres ${PGDATA?}
+$ sudo chmod 700 ${PGDATA?}
 
-As the system administrator, change the permissions of pgsql: 
+As the system administrator, change the permissions of pgsql:
 
 $ sudo chown -R root:root /usr/pgsql-${PGVER?}'
   impact 0.5
@@ -81,6 +81,7 @@ $ sudo chown -R root:root /usr/pgsql-${PGVER?}'
 
   input('pg_shared_dirs').each do |dir|
     next unless directory(dir).exist?
+
     describe directory(dir) do
       it { should be_owned_by 'root' }
       it { should be_grouped_into 'root' }

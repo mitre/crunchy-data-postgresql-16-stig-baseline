@@ -38,99 +38,99 @@ Create and/or maintain documentation of each group role's appropriate permission
 
 Implement these permissions in the database and remove any permissions that exceed those documented.
 
-The following are examples of how to use role privileges in PostgreSQL to enforce access controls. For a complete list of privileges, refer to the official documentation: https://www.postgresql.org/docs/current/static/sql-createrole.html. 
+The following are examples of how to use role privileges in PostgreSQL to enforce access controls. For a complete list of privileges, refer to the official documentation: https://www.postgresql.org/docs/current/static/sql-createrole.html.
 
-#### Roles Example 1 
+#### Roles Example 1
 
-The following example demonstrates how to create an admin role with CREATEDB and CREATEROLE privileges. 
+The following example demonstrates how to create an admin role with CREATEDB and CREATEROLE privileges.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "CREATE ROLE admin WITH CREATEDB CREATEROLE" 
+$ psql -c "CREATE ROLE admin WITH CREATEDB CREATEROLE"
 
-#### Roles Example 2 
+#### Roles Example 2
 
-The following example demonstrates how to create a role with a password that expires and makes the role a member of the "admin" group. 
+The following example demonstrates how to create a role with a password that expires and makes the role a member of the "admin" group.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "CREATE ROLE joe LOGIN ENCRYPTED PASSWORD 'stig_2024' VALID UNTIL '2024-09-20' IN ROLE admin" 
+$ psql -c "CREATE ROLE joe LOGIN ENCRYPTED PASSWORD 'stig_2024' VALID UNTIL '2024-09-20' IN ROLE admin"
 
-#### Roles Example 3 
+#### Roles Example 3
 
-The following demonstrates how to revoke privileges from a role using REVOKE. 
+The following demonstrates how to revoke privileges from a role using REVOKE.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "REVOKE admin FROM joe" 
+$ psql -c "REVOKE admin FROM joe"
 
-#### Roles Example 4 
+#### Roles Example 4
 
-The following demonstrates how to alter privileges in a role using ALTER. 
+The following demonstrates how to alter privileges in a role using ALTER.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "ALTER ROLE joe NOLOGIN" 
+$ psql -c "ALTER ROLE joe NOLOGIN"
 
-The following are examples of how to use grant privileges in PostgreSQL to enforce access controls on objects. For a complete list of privileges, refer to the official documentation: https://www.postgresql.org/docs/current/static/sql-grant.html. 
+The following are examples of how to use grant privileges in PostgreSQL to enforce access controls on objects. For a complete list of privileges, refer to the official documentation: https://www.postgresql.org/docs/current/static/sql-grant.html.
 
-#### Grant Example 1 
+#### Grant Example 1
 
-The following example demonstrates how to grant INSERT on a table to a role. 
+The following example demonstrates how to grant INSERT on a table to a role.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "GRANT SELECT ON stig_test TO joe" 
+$ psql -c "GRANT SELECT ON stig_test TO joe"
 
-#### Grant Example 2 
+#### Grant Example 2
 
-The following example demonstrates how to grant ALL PRIVILEGES on a table to a role. 
+The following example demonstrates how to grant ALL PRIVILEGES on a table to a role.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "GRANT ALL PRIVILEGES ON stig_test TO joe" 
+$ psql -c "GRANT ALL PRIVILEGES ON stig_test TO joe"
 
-#### Grant Example 3 
+#### Grant Example 3
 
-The following example demonstrates how to grant a role to a role. 
+The following example demonstrates how to grant a role to a role.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "GRANT admin TO joe" 
+$ psql -c "GRANT admin TO joe"
 
-#### Revoke Example 1 
+#### Revoke Example 1
 
-The following example demonstrates how to revoke access from a role. 
+The following example demonstrates how to revoke access from a role.
 
-As the database administrator (shown here as "postgres"), run the following SQL: 
+As the database administrator (shown here as "postgres"), run the following SQL:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ psql -c "REVOKE admin FROM joe" 
+$ psql -c "REVOKE admin FROM joe"
 
-To change authentication requirements for the database, as the database administrator (shown here as "postgres"), edit pg_hba.conf: 
+To change authentication requirements for the database, as the database administrator (shown here as "postgres"), edit pg_hba.conf:
 
-$ sudo su - postgres 
+$ sudo su - postgres
 
-$ vi ${PGDATA?}/pg_hba.conf 
+$ vi ${PGDATA?}/pg_hba.conf
 
-Edit authentication requirements to the organizational requirements. Refer to the official documentation for the complete list of options for authentication: http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html. 
+Edit authentication requirements to the organizational requirements. Refer to the official documentation for the complete list of options for authentication: http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html.
 
-After changes to pg_hba.conf, reload the server: 
+After changes to pg_hba.conf, reload the server:
 
 $ sudo systemctl reload postgresql-${PGVER?})
   impact 0.7
@@ -159,8 +159,8 @@ $ sudo systemctl reload postgresql-${PGVER?})
     roles.each do |role|
       next if input('pg_superusers').include?(role)
 
-      superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r '\
-      "WHERE r.rolname = '#{role}';"
+      superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r ' \
+                      "WHERE r.rolname = '#{role}';"
 
       describe sql.query(superuser_sql, [input('pg_db')]) do
         its('output') { should_not eq 't' }
@@ -172,15 +172,15 @@ $ sudo systemctl reload postgresql-${PGVER?})
 
     object_granted_privileges = 'arwdDxtU'
     object_public_privileges = 'r'
-    object_acl = "^((((#{owners})=[#{object_granted_privileges}]+|"\
-      "=[#{object_public_privileges}]+)\/\\w+,?)+|)\\|"
+    object_acl = "^((((#{owners})=[#{object_granted_privileges}]+|" \
+                 "=[#{object_public_privileges}]+)/\\w+,?)+|)\\|"
     object_acl_regex = Regexp.new(object_acl)
 
-    objects_sql = 'SELECT n.nspname, c.relname, c.relkind '\
-      'FROM pg_catalog.pg_class c '\
-      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-      "WHERE c.relkind IN ('r', 'v', 'm', 'S', 'f') "\
-      "AND n.nspname !~ '^pg_' AND pg_catalog.pg_table_is_visible(c.oid);"
+    objects_sql = 'SELECT n.nspname, c.relname, c.relkind ' \
+                  'FROM pg_catalog.pg_class c ' \
+                  'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                  "WHERE c.relkind IN ('r', 'v', 'm', 'S', 'f') " \
+                  "AND n.nspname !~ '^pg_' AND pg_catalog.pg_table_is_visible(c.oid);"
 
     databases_sql = 'SELECT datname FROM pg_catalog.pg_database where not datistemplate;'
     databases_query = sql.query(databases_sql, [input('pg_db')])
@@ -194,11 +194,11 @@ $ sudo systemctl reload postgresql-${PGVER?})
 
       objects.each do |obj|
         schema, object, type = obj.split('|')
-        relacl_sql = "SELECT pg_catalog.array_to_string(c.relacl, E','), "\
-          'n.nspname, c.relname, c.relkind FROM pg_catalog.pg_class c '\
-          'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-          "WHERE n.nspname = '#{schema}' AND c.relname = '#{object}' "\
-          "AND c.relkind = '#{type}';"
+        relacl_sql = "SELECT pg_catalog.array_to_string(c.relacl, E','), " \
+                     'n.nspname, c.relname, c.relkind FROM pg_catalog.pg_class c ' \
+                     'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                     "WHERE n.nspname = '#{schema}' AND c.relname = '#{object}' " \
+                     "AND c.relkind = '#{type}';"
 
         describe sql.query(relacl_sql, [database]) do
           its('output') { should match object_acl_regex }

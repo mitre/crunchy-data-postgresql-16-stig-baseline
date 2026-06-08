@@ -26,7 +26,7 @@ $ psql -c "\\du"
 Review the role permissions, if any role is listed as superuser but should not have that access, this is a finding.'
   desc 'fix', "Configure PostgreSQL's settings to allow designated personnel to select which auditable events are audited.
 
-Using pgaudit allows administrators the flexibility to choose what they log. For an overview of the capabilities of pgaudit, refer to https://github.com/pgaudit/pgaudit. 
+Using pgaudit allows administrators the flexibility to choose what they log. For an overview of the capabilities of pgaudit, refer to https://github.com/pgaudit/pgaudit.
 
 Refer to supplementary content APPENDIX-B for documentation on installing pgaudit.
 
@@ -60,8 +60,9 @@ $ chmod 600 ${PGDATA?}/postgresql.conf"
 
   roles.each do |role|
     next if input('pg_superusers').include?(role)
-    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r '\
-    "WHERE r.rolname = '#{role}';"
+
+    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r ' \
+                    "WHERE r.rolname = '#{role}';"
 
     describe sql.query(superuser_sql, [input('pg_db')]) do
       its('output') { should_not eq 't' }

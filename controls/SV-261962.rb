@@ -24,23 +24,23 @@ If the output does not contain role, read, write, and ddl, this is a finding.'
 
 If logging is enabled, the following configurations must be made to log unsuccessful connections, date/time, username, and session identifier.
 
-As the database administrator (shown here as "postgres"), edit postgresql.conf: 
+As the database administrator (shown here as "postgres"), edit postgresql.conf:
 
-$ sudo su - postgres 
-$ vi ${PGDATA?}/postgresql.conf 
+$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
 
-Edit the following parameters: 
+Edit the following parameters:
 
-log_connections = on 
-log_line_prefix = '< %m %u %c: >' 
-pgaudit.log = 'read, write' 
+log_connections = on
+log_line_prefix = '< %m %u %c: >'
+pgaudit.log = 'read, write'
 
-Where: 
-* %m is the time and date 
-* %u is the username 
-* %c is the session ID for the connection 
+Where:
+* %m is the time and date
+* %u is the username
+* %c is the session ID for the connection
 
-As the system administrator, reload the server with the new configuration: 
+As the system administrator, reload the server with the new configuration:
 
 $ sudo systemctl reload postgresql-${PGVER?})
   impact 0.5
@@ -59,7 +59,7 @@ $ sudo systemctl reload postgresql-${PGVER?})
     its('output') { should include 'pgaudit' }
   end
 
-  pgaudit_types = %w(read write)
+  pgaudit_types = %w[read write]
 
   pgaudit_types.each do |type|
     describe sql.query('SHOW pgaudit.log;', [input('pg_db')]) do

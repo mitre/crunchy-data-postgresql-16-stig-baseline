@@ -37,24 +37,28 @@ REVOKE SELECT ON some_function FROM bob;'
   tag cci: ['CCI-001499']
   tag nist: ['CM-5 (6)']
 
-  if !input('windows_runner')
+  if input('windows_runner')
+    describe 'This must be manually reviewed at this time' do
+      skip 'This must be manually reveiwed at this time'
+    end
+  else
     sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
     object_granted_privileges = 'arwdDxtU'
     object_public_privileges = 'r'
-    object_acl = "^((((#{input('pg_superusers').join('|')})=[#{object_granted_privileges}]+|"\
-      "=[#{object_public_privileges}]+)\/\\w+,?)+|)\\|"
+    object_acl = "^((((#{input('pg_superusers').join('|')})=[#{object_granted_privileges}]+|" \
+                 "=[#{object_public_privileges}]+)/\\w+,?)+|)\\|"
     object_acl_regex = Regexp.new(object_acl)
 
-    pg_settings_acl = "^((((#{input('pg_superusers').join('|')})=[#{object_granted_privileges}]+|"\
-      "=rw)\/\\w+,?)+)\\|pg_catalog\\|pg_settings\\|v"
+    pg_settings_acl = "^((((#{input('pg_superusers').join('|')})=[#{object_granted_privileges}]+|" \
+                      '=rw)/\\w+,?)+)\\|pg_catalog\\|pg_settings\\|v'
     pg_settings_acl_regex = Regexp.new(pg_settings_acl)
 
     tested = []
-    objects_sql = 'SELECT n.nspname, c.relname, c.relkind '\
-      'FROM pg_catalog.pg_class c '\
-      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-      "WHERE c.relkind IN ('r', 'v', 'm', 'S', 'f');"
+    objects_sql = 'SELECT n.nspname, c.relname, c.relkind ' \
+                  'FROM pg_catalog.pg_class c ' \
+                  'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                  "WHERE c.relkind IN ('r', 'v', 'm', 'S', 'f');"
 
     databases_sql = 'SELECT datname FROM pg_catalog.pg_database where not datistemplate;'
     databases_query = sql.query(databases_sql, [input('pg_db')])
@@ -63,16 +67,18 @@ REVOKE SELECT ON some_function FROM bob;'
     databases.each do |database|
       rows = sql.query(objects_sql, [database])
       next unless rows.methods.include?(:output) # Handle connection disabled on database
+
       objects = rows.lines
 
       objects.each do |obj|
         next if tested.include?(obj)
+
         schema, object, type = obj.split('|')
-        relacl_sql = "SELECT pg_catalog.array_to_string(c.relacl, E','), "\
-          'n.nspname, c.relname, c.relkind FROM pg_catalog.pg_class c '\
-          'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-          "WHERE n.nspname = '#{schema}' AND c.relname = '#{object}' "\
-          "AND c.relkind = '#{type}';"
+        relacl_sql = "SELECT pg_catalog.array_to_string(c.relacl, E','), " \
+                     'n.nspname, c.relname, c.relkind FROM pg_catalog.pg_class c ' \
+                     'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                     "WHERE n.nspname = '#{schema}' AND c.relname = '#{object}' " \
+                     "AND c.relkind = '#{type}';"
 
         sql_result = sql.query(relacl_sql, [database])
 
@@ -98,10 +104,6 @@ REVOKE SELECT ON some_function FROM bob;'
       it { should be_directory }
       it { should be_owned_by input('pg_owner') }
       its('mode') { should cmp '0700' }
-    end
-  else
-    describe 'This must be manually reviewed at this time' do
-      skip 'This must be manually reveiwed at this time'
     end
   end
 end

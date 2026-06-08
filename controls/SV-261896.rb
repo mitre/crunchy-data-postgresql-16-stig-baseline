@@ -11,7 +11,7 @@ The standard for validating cryptographic modules will transition to the NIST FI
 FIPS 140-2 modules can remain active for up to five years after validation or until September 21, 2026, when the FIPS 140-2 validations will be moved to the historical list. Even on the historical list, CMVP supports the purchase and use of these modules for existing systems. While federal agencies decide when they move to FIPS 140-3 only modules, purchasers are reminded that for several years there may be a limited selection of FIPS 140-3 modules from which to choose. CMVP recommends purchasers consider all modules that appear on the Validated Modules Search Page:
 https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules.
 
-More information on the FIPS 140-3 transition can be found here: 
+More information on the FIPS 140-3 transition can be found here:
 https://csrc.nist.gov/Projects/fips-140-3-transition-effort/.'
   desc 'check', 'As the system administrator, run the following:
 
@@ -41,7 +41,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
     # fips-mode-setup requires sudo — ensure 'inspec exec' is run with --sudo.
     if sysctl_exists
       describe command('sysctl crypto.fips_enabled') do
-        its('stdout') { should match /crypto\.fips_enabled\s*=\s*1/ }
+        its('stdout') { should match(/crypto\.fips_enabled\s*=\s*1/) }
       end
     else
       describe command('fips-mode-setup --check') do
@@ -66,14 +66,14 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
         # OpenSSL 3.x uses a provider model; a FIPS provider must be listed
         # and have a status of 'active'.
         describe command('openssl list -providers') do
-          its('stdout') { should match /fips[\s\S]*?status: active/ }
+          its('stdout') { should match(/fips[\s\S]*?status: active/) }
         end
       else
         # OpenSSL 4.x or an unrecognized version — no documented FIPS
         # verification method exists yet. Manual review required.
         describe 'OpenSSL FIPS compliance' do
-          skip "Manual review required: OpenSSL version '#{openssl_version.strip}' is not 1.x or 3.x. "\
-               'No documented automated method exists for verifying FIPS compliance on this version. '\
+          skip "Manual review required: OpenSSL version '#{openssl_version.strip}' is not 1.x or 3.x. " \
+               'No documented automated method exists for verifying FIPS compliance on this version. ' \
                'Verify manually that the installed OpenSSL is FIPS 140-2/140-3 approved.'
         end
       end
@@ -81,7 +81,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
       # OpenSSL is not present. Another FIPS-validated cryptographic module
       # may be in use — this cannot be verified automatically.
       describe 'OpenSSL FIPS compliance' do
-        skip 'Manual review required: OpenSSL is not installed. '\
+        skip 'Manual review required: OpenSSL is not installed. ' \
              'Verify manually that a FIPS 140-2/140-3 validated cryptographic module is installed and active.'
       end
     end
@@ -89,7 +89,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
     # Neither sysctl nor fips-mode-setup is available, which means this is
     # likely a non-Linux system. FIPS status cannot be checked automatically.
     describe 'FIPS enablement' do
-      skip 'Manual review required: Neither sysctl nor fips-mode-setup is available on this system. '\
+      skip 'Manual review required: Neither sysctl nor fips-mode-setup is available on this system. ' \
            'Verify manually that FIPS 140-2/140-3 validated cryptographic modules are enabled.'
     end
   end
