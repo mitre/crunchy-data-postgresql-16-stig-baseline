@@ -1,8 +1,8 @@
 control 'SV-261874' do
   title 'PostgreSQL must be configurable to overwrite audit log records, oldest first (first-in-first-out [FIFO]), in the event of unavailability of space for more audit log records.'
-  desc 'It is critical that when PostgreSQL is at risk of failing to process audit logs as required, it take action to mitigate the failure. Audit processing failures include software/hardware errors; failures in the audit capturing mechanisms; and audit storage capacity being reached or exceeded. Responses to audit failure depend upon the nature of the failure mode. 
+  desc 'It is critical that when PostgreSQL is at risk of failing to process audit logs as required, it take action to mitigate the failure. Audit processing failures include software/hardware errors; failures in the audit capturing mechanisms; and audit storage capacity being reached or exceeded. Responses to audit failure depend upon the nature of the failure mode.
 
-When availability is an overriding concern, approved actions in response to an audit failure are as follows: 
+When availability is an overriding concern, approved actions in response to an audit failure are as follows:
 
 (i) If the failure was caused by the lack of audit record storage capacity, PostgreSQL must continue generating audit records, if possible (automatically restarting the audit service if necessary), overwriting the oldest audit records in a first-in-first-out manner.
 
@@ -11,7 +11,7 @@ When availability is an overriding concern, approved actions in response to an a
 Systems where availability is paramount will most likely be MAC I; the final determination is the prerogative of the application owner, subject to Authorizing Official concurrence. In any case, sufficient auditing resources must be allocated to avoid audit data loss in all but the most extreme situations.'
   desc 'check', 'If the Authorizing Official (AO)-approved system documentation states that system availability takes precedence, this requirement is Not Applicable.
 
-If an externally managed and monitored partition or logical volume that can be grown dynamically is being used for logging, this is not a finding. 
+If an externally managed and monitored partition or logical volume that can be grown dynamically is being used for logging, this is not a finding.
 
 If PostgreSQL is auditing to a directory that is not being actively checked for availability of disk space, and if a tool, utility, script, or other mechanism is not being used to ensure sufficient disk space is available for the creation of new audit logs, this is a finding.
 

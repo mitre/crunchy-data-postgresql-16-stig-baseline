@@ -16,7 +16,7 @@ If any files are not owned by the database owner or have permissions allowing ot
 
 As the server administrator, check the permissions on the shared libraries for PostgreSQL:
 
-$ sudo ls -la /usr/pgsql-${PGVER?} 
+$ sudo ls -la /usr/pgsql-${PGVER?}
 $ sudo ls -la /usr/pgsql-${PGVER?}/bin
 $ sudo ls -la /usr/pgsql-${PGVER?}/include
 $ sudo ls -la /usr/pgsql-${PGVER?}/lib
@@ -25,20 +25,20 @@ $ sudo ls -la /usr/pgsql-${PGVER?}/share
 If any files are not owned by root or have permissions allowing others to modify (write) configuration files, this is a finding.'
   desc 'fix', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-As the database administrator (shown here as "postgres"), change the ownership and permissions of configuration files in PGDATA: 
+As the database administrator (shown here as "postgres"), change the ownership and permissions of configuration files in PGDATA:
 
-$ sudo su - postgres 
-$ chown postgres:postgres ${PGDATA?}/postgresql.conf 
-$ chmod 0600 ${PGDATA?}/postgresql.conf 
+$ sudo su - postgres
+$ chown postgres:postgres ${PGDATA?}/postgresql.conf
+$ chmod 0600 ${PGDATA?}/postgresql.conf
 
-As the server administrator, change the ownership and permissions of shared objects in /usr/pgsql-${PGVER?}/*.so 
+As the server administrator, change the ownership and permissions of shared objects in /usr/pgsql-${PGVER?}/*.so
 
-$ sudo chown root:root /usr/pgsql-${PGVER?}/lib/*.so 
-$ sudo chmod 0755 /usr/pgsql-${PGVER?}/lib/*.so 
+$ sudo chown root:root /usr/pgsql-${PGVER?}/lib/*.so
+$ sudo chmod 0755 /usr/pgsql-${PGVER?}/lib/*.so
 
-As the service administrator, change the ownership and permissions of executables in /usr/pgsql-${PGVER?}/bin: 
+As the service administrator, change the ownership and permissions of executables in /usr/pgsql-${PGVER?}/bin:
 
-$ sudo chown root:root /usr/pgsql-${PGVER?}/bin/* 
+$ sudo chown root:root /usr/pgsql-${PGVER?}/bin/*
 $ sudo chmod 0755 /usr/pgsql-${PGVER?}/bin/*'
   impact 0.5
   tag check_id: 'C-65735r1000646_chk'

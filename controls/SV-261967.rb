@@ -14,7 +14,7 @@ If log_destination is not syslog, this is a finding.
 
 As the database administrator, check which log facility is configured by running the following SQL:
 
-$ psql -c "SHOW syslog_facility" 
+$ psql -c "SHOW syslog_facility"
 
 Check with the organization to refer to how syslog facilities are defined in their organization.
 

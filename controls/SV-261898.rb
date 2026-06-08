@@ -37,7 +37,7 @@ ALTER ROLE <username> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;'
   tag cci: ['CCI-001082']
   tag nist: ['SC-2']
 
-  privileges = %w(rolcreatedb rolcreaterole rolsuper)
+  privileges = %w[rolcreatedb rolcreaterole rolsuper]
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
   roles_sql = 'SELECT r.rolname FROM pg_catalog.pg_roles r;'
@@ -46,9 +46,10 @@ ALTER ROLE <username> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;'
 
   roles.each do |role|
     next if input('pg_superusers').include?(role)
+
     privileges.each do |privilege|
-      privilege_sql = "SELECT r.#{privilege} FROM pg_catalog.pg_roles r "\
-      "WHERE r.rolname = '#{role}';"
+      privilege_sql = "SELECT r.#{privilege} FROM pg_catalog.pg_roles r " \
+                      "WHERE r.rolname = '#{role}';"
 
       describe sql.query(privilege_sql, [input('pg_db')]) do
         its('output') { should_not eq 't' }

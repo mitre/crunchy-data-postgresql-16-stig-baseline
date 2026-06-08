@@ -1,41 +1,41 @@
 control 'SV-261876' do
   title 'The audit information produced by PostgreSQL must be protected from unauthorized modification.'
-  desc "If audit data were to become compromised, competent forensic analysis and discovery of the true source of potentially malicious system activity would be impossible to achieve. 
+  desc "If audit data were to become compromised, competent forensic analysis and discovery of the true source of potentially malicious system activity would be impossible to achieve.
 
-To ensure the veracity of audit data, the information system and/or the application must protect audit information from unauthorized modification. 
+To ensure the veracity of audit data, the information system and/or the application must protect audit information from unauthorized modification.
 
-This requirement can be achieved through multiple methods depending on system architecture and design. Some commonly employed methods include ensuring log files have the proper file system permissions and limiting log data locations. 
+This requirement can be achieved through multiple methods depending on system architecture and design. Some commonly employed methods include ensuring log files have the proper file system permissions and limiting log data locations.
 
 Applications providing a user interface to audit data will leverage user permissions and roles identifying the user accessing the data and the user's corresponding rights to make access decisions regarding the modification of audit data.
 
-Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity. 
+Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.
 
 Modification of database audit data could mask the theft or unauthorized modification of sensitive data stored in the database."
-  desc 'check', 'Review locations of audit logs, both internal to the database and database audit logs located at the operating system level. 
+  desc 'check', 'Review locations of audit logs, both internal to the database and database audit logs located at the operating system level.
 
-Verify there are appropriate controls and permissions to protect the audit information from unauthorized modification. 
+Verify there are appropriate controls and permissions to protect the audit information from unauthorized modification.
 
-Note: The following instructions use the PGLOG environment variable. Refer to supplementary content APPENDIX-I for instructions on configuring PGLOG. 
+Note: The following instructions use the PGLOG environment variable. Refer to supplementary content APPENDIX-I for instructions on configuring PGLOG.
 
-#### stderr Logging 
+#### stderr Logging
 
-If the PostgreSQL server is configured to use stderr for logging, the logs will be owned by the database owner (usually postgres user) with a default permissions level of 0600. The permissions can be configured in postgresql.conf. 
+If the PostgreSQL server is configured to use stderr for logging, the logs will be owned by the database owner (usually postgres user) with a default permissions level of 0600. The permissions can be configured in postgresql.conf.
 
-To check the permissions for log files in postgresql.conf, as the database owner (shown here as "postgres"), run the following command: 
+To check the permissions for log files in postgresql.conf, as the database owner (shown here as "postgres"), run the following command:
 
-$ sudo su - postgres 
-$ psql -c "show log_file_mode;" 
+$ sudo su - postgres
+$ psql -c "show log_file_mode;"
 
-If the permissions are not 0600, this is a finding. 
+If the permissions are not 0600, this is a finding.
 
-As the database owner (shown here as "postgres"), list the permissions of the logs: 
+As the database owner (shown here as "postgres"), list the permissions of the logs:
 
-$ sudo su - postgres 
-$ ls -la ${PGLOG?} 
+$ sudo su - postgres
+$ ls -la ${PGLOG?}
 
-If logs are not owned by the database owner (shown here as "postgres") and are not the same permissions as configured in postgresql.conf, this is a finding. 
+If logs are not owned by the database owner (shown here as "postgres") and are not the same permissions as configured in postgresql.conf, this is a finding.
 
-#### syslog Logging 
+#### syslog Logging
 
 If the PostgreSQL server is configured to use syslog for logging, consult the organization syslog setting for permissions and ownership of logs.'
   desc 'fix', 'To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C.
@@ -81,7 +81,7 @@ $ chmod 0600 <log directory name>/*.log'
   end
 
   describe sql.query('SHOW logging_collector;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe directory(input('pg_log_dir')) do

@@ -7,7 +7,7 @@ Applications providing tools to interface with audit data will leverage user per
 Audit tools include, but are not limited to, vendor-provided and open source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators.'
   desc 'check', 'Note: The following instructions use the PGDATA environment variable. Refer to APPENDIX-F for instructions on configuring PGDATA.
 
-All configurations for auditing and logging can be found in the postgresql.conf configuration file. By default, this file is owned by the database administrator account. 
+All configurations for auditing and logging can be found in the postgresql.conf configuration file. By default, this file is owned by the database administrator account.
 
 To check that the permissions of the postgresql.conf are owned by the database administrator with permissions of 0600, run the following as the database administrator (shown here as "postgres"):
 

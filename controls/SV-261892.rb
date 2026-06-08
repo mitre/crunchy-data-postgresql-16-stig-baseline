@@ -33,7 +33,7 @@ host all all .example.com scram-sha-256'
   tag cci: ['CCI-000197']
   tag nist: ['IA-5 (1) (c)']
 
-  describe postgres_hba_conf("#{input('pg_hba_conf_file')}") do
+  describe postgres_hba_conf(input('pg_hba_conf_file').to_s) do
     its('auth_method') { should_not include 'password' }
     its('auth_method') { should_not include 'md5' }
   end

@@ -41,7 +41,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  pgaudit_types = %w(ddl role write)
+  pgaudit_types = %w[ddl role write]
 
   pgaudit_types.each do |type|
     describe sql.query('SHOW pgaudit.log;', [input('pg_db')]) do

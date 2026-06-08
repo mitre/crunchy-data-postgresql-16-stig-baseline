@@ -51,8 +51,9 @@ $ psql -c "DROP EXTENSION extension_name"'
 
   roles.each do |role|
     next if input('pg_superusers').include?(role)
-    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r '\
-      "WHERE r.rolname = '#{role}';"
+
+    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r ' \
+                    "WHERE r.rolname = '#{role}';"
 
     describe sql.query(superuser_sql, [input('pg_db')]) do
       its('output') { should_not eq 't' }

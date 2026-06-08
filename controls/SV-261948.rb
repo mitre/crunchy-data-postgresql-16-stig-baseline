@@ -51,7 +51,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
     its('output') { should include 'pgaudit' }
   end
 
-  pgaudit_types = %w(ddl read role write)
+  pgaudit_types = %w[ddl read role write]
 
   pgaudit_types.each do |type|
     describe sql.query('SHOW pgaudit.log;', [input('pg_db')]) do

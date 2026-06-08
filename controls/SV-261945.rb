@@ -1,8 +1,8 @@
 control 'SV-261945' do
   title 'PostgreSQL must generate audit records when unsuccessful attempts to modify privileges/permissions occur.'
-  desc 'Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected. 
+  desc 'Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.
 
-In an SQL environment, modifying permissions is typically done via the GRANT, REVOKE, and DENY commands. 
+In an SQL environment, modifying permissions is typically done via the GRANT, REVOKE, and DENY commands.
 
 To aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.'
   desc 'check', 'Note: The following instructions use the PGDATA and PGLOG environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-I for PGLOG.
@@ -44,11 +44,11 @@ All denials are logged by default if logging is enabled. To ensure logging is en
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('CREATE ROLE fooaudit; CREATE TABLE fooaudittest (id int); SET ROLE fooaudit; GRANT ALL PRIVILEGES ON fooaudittest TO fooaudit; DROP TABLE IF EXISTS fooaudittest;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"permission denied for relation\\|table\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*pg_authid.*$/ }
+      its('stdout') { should match(/^.*pg_authid.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

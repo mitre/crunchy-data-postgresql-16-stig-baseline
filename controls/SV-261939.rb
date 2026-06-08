@@ -115,7 +115,7 @@ $ cat ${PGDATA?}/${PGLOG?}/<latest_log>
 
 If the denial is not logged, this is a finding.
 
-#### PREPARE 
+#### PREPARE
 As role bob, attempt to execute a prepared system using PREPARE by running the following SQL:
 
 $ sudo su - postgres
@@ -162,18 +162,18 @@ All denials are logged if logging is enabled. To ensure logging is enabled, see 
   if file(input('pg_audit_log_dir')).exist?
 
     describe sql.query('CREATE ROLE permdeniedtest; CREATE SCHEMA permdeniedschema; SET ROLE permdeniedtest; CREATE TABLE permdeniedschema.usertable(index int);', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     # Find the most recently modified log file in the input('pg_audit_log_dir'), grep for the syntax error statement, and then
     # test to validate the output matches the regex.
 
     describe command("grep -r \"permission denied for schema\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied for schema permdeniedschema..*$/ }
+      its('stdout') { should match(/^.*permission denied for schema permdeniedschema..*$/) }
     end
 
     describe sql.query('SET ROLE postgres; DROP SCHEMA IF EXISTS permdeniedschema; DROP ROLE IF EXISTS permdeniedtest;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

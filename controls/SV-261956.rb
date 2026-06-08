@@ -57,11 +57,11 @@ $ sudo systemctl reload postgresql-${PGVER?})
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('SHOW log_connections;', [input('pg_db')]) do
-      its('output') { should match /on/ }
+      its('output') { should match(/on/) }
     end
 
     describe command("grep -r \"connection authorized\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*user=postgres.*$/ }
+      its('stdout') { should match(/^.*user=postgres.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

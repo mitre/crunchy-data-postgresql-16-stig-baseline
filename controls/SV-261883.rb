@@ -40,7 +40,7 @@ If other applications are located in the same directory as PostgreSQL, this is a
 
     else
       describe command("lsof | awk '$9 ~ \"#{dir}\" {print $1}'") do
-        its('stdout') { should match /^$|postgres|postmaste/ }
+        its('stdout') { should match(/^$|postgres|postmaste/) }
         its('stderr') { should eq '' }
       end
     end

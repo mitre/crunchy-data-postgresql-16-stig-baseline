@@ -52,10 +52,10 @@ $ sudo systemctl reload postgresql-${PGVER?}"
   end
 
   describe sql.query('SHOW log_connections;', [input('pg_db')]) do
-    its('output') { should match /on|true/i }
+    its('output') { should match(/on|true/i) }
   end
 
   describe sql.query('SHOW log_disconnections;', [input('pg_db')]) do
-    its('output') { should match /on|true/i }
+    its('output') { should match(/on|true/i) }
   end
 end

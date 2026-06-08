@@ -43,11 +43,11 @@ for instructions on enabling logging.'
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('CREATE ROLE pgauditrolefailuretest; SET ROLE pgauditrolefailuretest; DROP ROLE postgres; SET ROLE postgres; DROP ROLE pgauditrolefailuretest;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"permission denied to drop role\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied to drop role.*$/ }
+      its('stdout') { should match(/^.*permission denied to drop role.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do
