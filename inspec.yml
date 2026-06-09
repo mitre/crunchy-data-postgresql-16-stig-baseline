@@ -148,7 +148,7 @@ inputs:
     required: true
 
   - name: windows_runner
-    description: "Define if the runner is the runner is window or linux"
+    description: "Define if the runner is Windows or Linux"
     type: Boolean
     value: false
 
