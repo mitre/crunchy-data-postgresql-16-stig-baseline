@@ -57,14 +57,14 @@ $ sudo systemctl reload postgresql-${PGVER?})
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
   describe sql.query('SHOW log_connections;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe sql.query('SHOW log_disconnections;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
-  log_line_prefix_escapes = %w(%m %u %d %c)
+  log_line_prefix_escapes = %w[%m %u %d %c]
 
   log_line_prefix_escapes.each do |escape|
     describe sql.query('SHOW log_line_prefix;', [input('pg_db')]) do

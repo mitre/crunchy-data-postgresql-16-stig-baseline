@@ -1,0 +1,53 @@
+---
+# CI-specific inputs for running against PostgreSQL 16 installed via apt
+# on an Ubuntu GitHub Actions runner (unhardened, vanilla install).
+windows_runner: false
+pg_owner: 'postgres'
+pg_group: 'postgres'
+pg_dba: 'postgres'
+pg_dba_password: 'testpassword'
+pg_host: '127.0.0.1'
+pg_port: '5432'
+pg_db: 'testdb'
+pg_version: '16'
+pg_data_dir: "/var/lib/postgresql/16/main"
+pg_log_dir: "/var/log/postgresql"
+pg_audit_log_dir: "/var/log/postgresql"
+pg_conf_file: "/etc/postgresql/16/main/postgresql.conf"
+pg_user_defined_conf: ""
+pg_hba_conf_file: "/etc/postgresql/16/main/pg_hba.conf"
+pg_ident_conf_file: "/etc/postgresql/16/main/pg_ident.conf"
+pg_shared_dirs:
+  - "/usr/lib/postgresql/16"
+  - "/usr/lib/postgresql/16/bin"
+  - "/usr/lib/postgresql/16/lib"
+  - "/usr/share/postgresql/16"
+pg_superusers:
+  - 'postgres'
+pg_users:
+  - 'pg_execute_server_program'
+  - 'pg_monitor'
+  - 'pg_read_all_settings'
+  - 'pg_read_all_stats'
+  - 'pg_read_server_files'
+  - 'pg_signal_backend'
+  - 'pg_stat_scan_tables'
+  - 'pg_write_server_files'
+  - 'postgres'
+pg_replicas:
+  - ''
+approved_auth_methods:
+  - 'gss'
+  - 'sspi'
+  - 'ldap'
+approved_packages:
+  - 'postgresql-16'
+approved_ext:
+  - ''
+pgaudit_installation: '/usr/lib/postgresql/16/lib/pgaudit'
+pg_max_connections: 100
+pg_timezone: 'UTC'
+pg_object_granted_privileges: 'arwdDxt'
+pg_object_public_privileges: 'rw'
+pg_object_exceptions:
+  - 'pg_settings'

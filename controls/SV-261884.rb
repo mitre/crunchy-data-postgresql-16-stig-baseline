@@ -24,7 +24,7 @@ If any object is not owned by an authorized role for ownership, this is a findin
 To create a schema owned by the user "bob", run the following SQL:
 
 $ sudo su - postgres
-$ psql -c "CREATE SCHEMA test AUTHORIZATION bob" 
+$ psql -c "CREATE SCHEMA test AUTHORIZATION bob"
 
 To alter the ownership of an existing object to be owned by the user "bob", run the following SQL:
 
@@ -45,38 +45,38 @@ $ psql -c "ALTER SCHEMA test OWNER TO bob"'
   databases_sql = "SELECT datname FROM pg_catalog.pg_database where datname = '#{input('pg_db')}';"
   databases_query = sql.query(databases_sql, [input('pg_db')])
   databases = databases_query.lines
-  types = %w(t s v) # tables, sequences views
+  types = %w[t s v] # tables, sequences views
 
   databases.each do |database|
     schemas_sql = ''
     functions_sql = ''
 
     if database == 'postgres'
-      schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) '\
-        'FROM pg_catalog.pg_namespace n '\
-        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
-      functions_sql = 'SELECT n.nspname, p.proname, '\
-        'pg_catalog.pg_get_userbyid(n.nspowner) '\
-        'FROM pg_catalog.pg_proc p '\
-        'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace '\
-        "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
+      schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                    'FROM pg_catalog.pg_namespace n ' \
+                    "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
+      functions_sql = 'SELECT n.nspname, p.proname, ' \
+                      'pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                      'FROM pg_catalog.pg_proc p ' \
+                      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace ' \
+                      "WHERE pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}';"
     else
-      schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) '\
-        'FROM pg_catalog.pg_namespace n '\
-        'WHERE pg_catalog.pg_get_userbyid(n.nspowner) '\
-        "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) "\
-        "AND n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';"
-      functions_sql = 'SELECT n.nspname, p.proname, '\
-        'pg_catalog.pg_get_userbyid(n.nspowner) '\
-        'FROM pg_catalog.pg_proc p '\
-        'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace '\
-        'WHERE pg_catalog.pg_get_userbyid(n.nspowner) '\
-        "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) "\
-        "AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema';"
+      schemas_sql = 'SELECT n.nspname, pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                    'FROM pg_catalog.pg_namespace n ' \
+                    'WHERE pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                    "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) " \
+                    "AND n.nspname !~ '^pg_' AND n.nspname <> 'information_schema';"
+      functions_sql = 'SELECT n.nspname, p.proname, ' \
+                      'pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                      'FROM pg_catalog.pg_proc p ' \
+                      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace ' \
+                      'WHERE pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                      "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) " \
+                      "AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema';"
     end
 
-    connection_error = "FATAL:\\s+database \"#{database}\" is not currently "\
-    'accepting connections'
+    connection_error = "FATAL:\\s+database \"#{database}\" is not currently " \
+                       'accepting connections'
     connection_error_regex = Regexp.new(connection_error)
 
     sql_result = sql.query(schemas_sql, [database])
@@ -107,21 +107,21 @@ $ psql -c "ALTER SCHEMA test OWNER TO bob"'
       objects_sql = ''
 
       if database == 'postgres'
-        objects_sql = 'SELECT n.nspname, c.relname, c.relkind, '\
-        'pg_catalog.pg_get_userbyid(n.nspowner) FROM pg_catalog.pg_class c '\
-        'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-        "WHERE c.relkind IN ('#{type}','s','') "\
-        "AND pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}' "
+        objects_sql = 'SELECT n.nspname, c.relname, c.relkind, ' \
+                      'pg_catalog.pg_get_userbyid(n.nspowner) FROM pg_catalog.pg_class c ' \
+                      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                      "WHERE c.relkind IN ('#{type}','s','') " \
+                      "AND pg_catalog.pg_get_userbyid(n.nspowner) <> '#{input('pg_owner')}' "
         "AND n.nspname !~ '^pg_toast';"
       else
-        objects_sql = 'SELECT n.nspname, c.relname, c.relkind, '\
-        'pg_catalog.pg_get_userbyid(n.nspowner) FROM pg_catalog.pg_class c '\
-        'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '\
-        "WHERE c.relkind IN ('#{type}','s','') "\
-        'AND pg_catalog.pg_get_userbyid(n.nspowner) '\
-        "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) "\
-        "AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema'"\
-        " AND n.nspname !~ '^pg_toast';"
+        objects_sql = 'SELECT n.nspname, c.relname, c.relkind, ' \
+                      'pg_catalog.pg_get_userbyid(n.nspowner) FROM pg_catalog.pg_class c ' \
+                      'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' \
+                      "WHERE c.relkind IN ('#{type}','s','') " \
+                      'AND pg_catalog.pg_get_userbyid(n.nspowner) ' \
+                      "NOT IN (#{input('pg_superusers').map { |e| "'#{e}'" }.join(',')}) " \
+                      "AND n.nspname <> 'pg_catalog' AND n.nspname <> 'information_schema' " \
+                      "AND n.nspname !~ '^pg_toast';"
       end
 
       sql_result = sql.query(objects_sql, [database])

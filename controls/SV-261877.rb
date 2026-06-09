@@ -11,31 +11,31 @@ Applications providing a user interface to audit data will leverage user permiss
 Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.
 
 Deletion of database audit data could mask the theft of, or the unauthorized modification of, sensitive data stored in the database.'
-  desc 'check', 'Note: The following instructions use the PGLOG environment variable. Refer to supplementary content APPENDIX-I for instructions on configuring PGLOG. 
+  desc 'check', 'Note: The following instructions use the PGLOG environment variable. Refer to supplementary content APPENDIX-I for instructions on configuring PGLOG.
 
-Review locations of audit logs, both internal to the database and database audit logs located at the operating system level. 
+Review locations of audit logs, both internal to the database and database audit logs located at the operating system level.
 
-Verify there are appropriate controls and permissions to protect the audit information from unauthorized modification. 
+Verify there are appropriate controls and permissions to protect the audit information from unauthorized modification.
 
-#### stderr Logging 
+#### stderr Logging
 
-If the PostgreSQL server is configured to use stderr for logging, the logs will be owned by the database administrator (shown here as "postgres") with a default permissions level of 0600. The permissions can be configured in postgresql.conf. 
+If the PostgreSQL server is configured to use stderr for logging, the logs will be owned by the database administrator (shown here as "postgres") with a default permissions level of 0600. The permissions can be configured in postgresql.conf.
 
-To check the permissions for log files, as the database administrator (shown here as "postgres"), run the following command: 
+To check the permissions for log files, as the database administrator (shown here as "postgres"), run the following command:
 
-$ sudo su - postgres 
-$ psql -c "show log_file_mode" 
+$ sudo su - postgres
+$ psql -c "show log_file_mode"
 
-If the permissions are not 0600, this is a finding. 
+If the permissions are not 0600, this is a finding.
 
-As the database administrator (shown here as "postgres"), list the permissions of the logs: 
+As the database administrator (shown here as "postgres"), list the permissions of the logs:
 
-$ sudo su - postgres 
-$ ls -la ${PGLOG?} 
+$ sudo su - postgres
+$ ls -la ${PGLOG?}
 
-If logs are not owned by the database administrator (shown here as "postgres") and are not the same permissions as configured in postgresql.conf, this is a finding. 
+If logs are not owned by the database administrator (shown here as "postgres") and are not the same permissions as configured in postgresql.conf, this is a finding.
 
-#### syslog Logging 
+#### syslog Logging
 
 If the PostgreSQL server is configured to use syslog for logging, consult organization syslog setting for permissions and ownership of logs.'
   desc 'fix', 'To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C.
@@ -75,7 +75,7 @@ $ chmod 0600 <log directory name>/*.log'
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
   describe sql.query('show logging_collector;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe sql.query('show log_file_mode;', [input('pg_db')]) do

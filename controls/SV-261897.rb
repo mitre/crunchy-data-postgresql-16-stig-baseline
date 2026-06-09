@@ -7,7 +7,7 @@ Nonorganizational users must be uniquely identified and authenticated for all ac
 Accordingly, a risk assessment is used in determining the authentication needs of the organization.
 
 Scalability, practicality, and security are simultaneously considered in balancing the need to ensure ease of use for access to federal information and information systems with the need to protect and adequately mitigate risk to organizational operations, organizational assets, individuals, other organizations, and the Nation.'
-  desc 'check', 'PostgreSQL uniquely identifies and authenticates PostgreSQL users through the use of DBMS roles. 
+  desc 'check', 'PostgreSQL uniquely identifies and authenticates PostgreSQL users through the use of DBMS roles.
 
 To list all roles in the database, as the database administrator (shown here as "postgres"), run the following SQL:
 

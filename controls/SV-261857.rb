@@ -20,7 +20,7 @@ If the total amount of connections is greater than documented by an organization
 To check the amount of connections allowed for each role, as the database administrator, run the following SQL:
 
 $ sudo su - postgres
-$ psql -c "SELECT rolname, rolconnlimit 
+$ psql -c "SELECT rolname, rolconnlimit
 FROM pg_roles
 WHERE rolname NOT IN (
 'pg_database_owner',
@@ -43,15 +43,15 @@ If any roles have more connections configured than documented, this is a finding
 
 To configure the maximum amount of connections allowed to the database, as the database administrator (shown here as "postgres") change the following in postgresql.conf (the value 10 is an example; set the value to suit local conditions):
 
-$ sudo su - postgres 
-$ vi ${PGDATA?}/postgresql.conf 
-max_connections = 10 
+$ sudo su - postgres
+$ vi ${PGDATA?}/postgresql.conf
+max_connections = 10
 
 Restart the database:
 
 $ sudo systemctl restart postgresql-${PGVER?}
 
-To limit the amount of connections allowed by a specific role, as the database administrator, run the following SQL: 
+To limit the amount of connections allowed by a specific role, as the database administrator, run the following SQL:
 
 $ psql -c "ALTER ROLE <rolname> CONNECTION LIMIT 1";'
   impact 0.5

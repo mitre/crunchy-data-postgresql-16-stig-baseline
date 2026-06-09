@@ -1,11 +1,11 @@
 control 'SV-261866' do
   title 'PostgreSQL must produce audit records containing sufficient information to establish what type of
 	events occurred.'
-  desc 'Information system auditing capability is critical for accurate forensic analysis. Without establishing what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. 
+  desc 'Information system auditing capability is critical for accurate forensic analysis. Without establishing what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
 
 Audit record content that may be necessary to satisfy the requirement of this policy includes, for example, time stamps, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.
 
-Associating event types with detected events in the application and audit logs provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application. 
+Associating event types with detected events in the application and audit logs provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application.
 
 PostgreSQL is capable of a range of actions on data stored within the database. It is important, for accurate forensic analysis, to know exactly what actions were performed. This requires specific information regarding the event type an audit record is referring to. If event type information is not recorded and stored with the audit record, the record itself is of very limited use.'
   desc 'check', 'As the database administrator (shown here as "postgres"), verify the current log_line_prefix setting:
@@ -44,7 +44,7 @@ $ psql -c "SHOW log_disconnections"
 If either setting is off, this is a finding.'
   desc 'fix', "Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C. 
+To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C.
 
 If logging is enabled the following configurations must be made to log connections, date/time, username and session identifier.
 
@@ -74,7 +74,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  log_line_prefix_escapes = %w(%m %u %d %s)
+  log_line_prefix_escapes = %w[%m %u %d %s]
   log_line_prefix_escapes.each do |escape|
     describe sql.query('SHOW log_line_prefix;', [input('pg_db')]) do
       its('output') { should include escape }
@@ -82,10 +82,10 @@ $ sudo systemctl reload postgresql-${PGVER?}"
   end
 
   describe sql.query('SHOW log_connections;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe sql.query('SHOW log_disconnections;', [input('pg_db')]) do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 end

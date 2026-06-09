@@ -57,14 +57,14 @@ All denials are logged by default if logging is enabled. To ensure logging is en
   if file(input('pg_audit_log_dir')).exist?
 
     describe sql.query("CREATE ROLE pgauditrolefailuretest; SET ROLE pgauditrolefailuretest; SET pgaudit.role='test'; SET ROLE postgres; DROP ROLE IF EXISTS pgauditrolefailuretest;", [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     # Find the most recently modified log file in the pg_audit_log_dir, grep for the syntax error statement, and then
     # test to validate the output matches the regex.
 
     describe command("grep -r \"permission denied to set parameter\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied to set parameter ..pgaudit.role..*$/ }
+      its('stdout') { should match(/^.*permission denied to set parameter ..pgaudit.role..*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'pg_audit_log_dir' inspec input parameter." do

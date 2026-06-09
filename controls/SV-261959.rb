@@ -61,19 +61,19 @@ All denials are logged by default if logging is enabled. To ensure logging is en
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('CREATE ROLE fooaudit; SET ROLE fooaudit; CREATE ROLE fooauditbad SUPERUSER;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"must be superuser to create superusers\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*must be superuser to create superusers.*$/ }
+      its('stdout') { should match(/^.*must be superuser to create superusers.*$/) }
     end
 
     describe sql.query('CREATE ROLE fooauditbad CREATEDB; CREATE ROLE fooauditbad CREATEROLE;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"permission denied to create role\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied to create role.*$/ }
+      its('stdout') { should match(/^.*permission denied to create role.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do
