@@ -15,7 +15,7 @@ jobs:
       LC_ALL: "en_US.UTF-8"
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
