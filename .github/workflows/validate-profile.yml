@@ -93,21 +93,21 @@ jobs:
             --enhanced-outcomes
 
       # ── Process & Report Results ────────────────────────────
-      - name: Save results summary
-        continue-on-error: true
-        uses: mitre/saf_action@v1.9.0
-        with:
-          command_string: "view summary -j -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
-
       - name: Generate Markdown Summary
         continue-on-error: true
-        uses: mitre/saf_action@v1.9.0
+        uses: mitre/saf_action@v1
         with:
           command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -f markdown -t -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md"
 
       - name: Append summary to GitHub Step Summary
         continue-on-error: true
         run: cat "spec/results/${PLATFORM}_${SUITE}-markdown-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save results summary
+        continue-on-error: true
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "view summary -j -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
 
       - name: Display results summary
         uses: mitre/saf_action@v1
