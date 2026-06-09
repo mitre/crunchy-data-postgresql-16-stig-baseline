@@ -7,7 +7,7 @@ To compile an accurate risk assessment and provide forensic analysis, it is esse
 Associating the date and time with detected events in the application and audit logs provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application.
 
 PostgreSQL is capable of a range of actions on data stored within the database. It is important, for accurate forensic analysis, to know exactly when specific actions were performed. This requires the date and time an audit record is referring to. If date and time information is not recorded and stored with the audit record, the record itself is of very limited use.'
-  desc 'check', 'As the database administrator (usually postgres), run the following SQL: 
+  desc 'check', 'As the database administrator (usually postgres), run the following SQL:
 
 $ sudo su - postgres
 $ psql -c "SHOW log_line_prefix"

@@ -57,7 +57,7 @@ $ sudo systemctl reload postgresql-${PGVER?}"
     its('output') { should include 'pgaudit' }
   end
 
-  pgaudit_types = %w(ddl read role write)
+  pgaudit_types = %w[ddl read role write]
 
   pgaudit_types.each do |type|
     describe sql.query('SHOW pgaudit.log;', [input('pg_db')]) do
@@ -66,6 +66,6 @@ $ sudo systemctl reload postgresql-${PGVER?}"
   end
 
   describe sql.query('SHOW pgaudit.log_catalog;', [input('pg_db')]) do
-    its('output') { should match /on|true/i }
+    its('output') { should match(/on|true/i) }
   end
 end

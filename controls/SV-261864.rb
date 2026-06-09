@@ -47,11 +47,11 @@ All denials are logged if logging is enabled. To ensure logging is enabled, see 
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('CREATE ROLE fooaudit; SET ROLE fooaudit; SELECT * FROM pg_authid; SET ROLE postgres; DROP ROLE fooaudit;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"permission denied for table\\|relation\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*pg_authid.*$/ }
+      its('stdout') { should match(/^.*pg_authid.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

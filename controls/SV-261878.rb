@@ -1,12 +1,12 @@
 control 'SV-261878' do
   title 'PostgreSQL must protect its audit features from unauthorized access.'
-  desc 'Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data. 
+  desc 'Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data.
 
-Depending upon the log format and application, system and application log tools may provide the only means to manipulate and manage application and system log data. It is, therefore, imperative that access to audit tools be controlled and protected from unauthorized access. 
+Depending upon the log format and application, system and application log tools may provide the only means to manipulate and manage application and system log data. It is, therefore, imperative that access to audit tools be controlled and protected from unauthorized access.
 
 Applications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order to make access decisions regarding the access to audit tools.
 
-Audit tools include, but are not limited to, OS-provided audit tools, vendor-provided audit tools, and open-source audit tools needed to successfully view and manipulate audit information system activity and records. 
+Audit tools include, but are not limited to, OS-provided audit tools, vendor-provided audit tools, and open-source audit tools needed to successfully view and manipulate audit information system activity and records.
 
 If an attacker were to gain access to audit tools, they could analyze audit logs for system weaknesses or weaknesses in the auditing itself. An attacker could also manipulate logs to hide evidence of malicious activity.'
   desc 'check', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA, APPENDIX-H for PGVER, and APPENDIX-I for PGLOG. Only the database owner and superuser can alter configuration of PostgreSQL.
@@ -14,11 +14,11 @@ If an attacker were to gain access to audit tools, they could analyze audit logs
 Ensure the PGLOG directory is owned by postgres user and group:
 
 $ sudo su - postgres
-$ ls -la ${PGLOG?} 
+$ ls -la ${PGLOG?}
 
-If PGLOG is not owned by the database owner, this is a finding. 
+If PGLOG is not owned by the database owner, this is a finding.
 
-Ensure the data directory is owned by postgres user and group. 
+Ensure the data directory is owned by postgres user and group.
 
 $ sudo su - postgres
 $ ls -la ${PGDATA?}
@@ -40,7 +40,7 @@ $ psql -x -c "\\du"
 If any role has "superuser" that should not, this is a finding.'
   desc 'fix', 'Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA, APPENDIX-H for PGVER and APPENDIX-I for PGLOG.
 
-If PGLOG or PGDATA are not owned by postgres user and group, configure them as follows: 
+If PGLOG or PGDATA are not owned by postgres user and group, configure them as follows:
 
 $ sudo chown -R postgres:postgres ${PGDATA?}
 $ sudo chown -R postgres:postgres ${PGLOG?}
@@ -86,8 +86,9 @@ $ psql -c "ALTER ROLE <role-name> WITH NOSUPERUSER"'
 
   roles.each do |role|
     next if input('pg_superusers').include?(role)
-    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r '\
-    "WHERE r.rolname = '#{role}';"
+
+    superuser_sql = 'SELECT r.rolsuper FROM pg_catalog.pg_roles r ' \
+                    "WHERE r.rolname = '#{role}';"
 
     describe sql.query(superuser_sql, [input('pg_db')]) do
       its('output') { should_not eq 't' }

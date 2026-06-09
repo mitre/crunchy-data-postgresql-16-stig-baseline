@@ -1,0 +1,38 @@
+name: Lint & Check the Profile
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    env:
+      LC_ALL: "en_US.UTF-8"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
+      - name: Run Bundle Install
+        run: bundle install
+
+      - name: Print CINC Auditor version
+        run: bundle exec cinc-auditor version
+
+      - name: Vendor the Profile
+        run: bundle exec cinc-auditor vendor . --overwrite
+
+      - name: Check the Inspec profile
+        run: bundle exec rake inspec:check
+
+      - name: Lint the Profile
+        run: bundle exec rake lint

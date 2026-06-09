@@ -19,7 +19,7 @@ $ psql -c "CREATE SCHEMA test_schema"
 $ psql -c "CREATE TABLE test_schema.test_table(id INT)"
 $ psql -c "INSERT INTO test_schema.test_table(id) VALUES (0)"
 
-Create a role "bob" and attempt to SELECT, INSERT, UPDATE, and DROP from the test table: 
+Create a role "bob" and attempt to SELECT, INSERT, UPDATE, and DROP from the test table:
 
 $ psql -c "CREATE ROLE BOB"
 $ psql -c "SET ROLE bob; SELECT * FROM test_schema.test_table"
@@ -87,34 +87,35 @@ All errors and denials are logged if logging is enabled. To ensure logging is en
     end
 
     describe sql.query('SET ROLE bob; SELECT * FROM test_schema.test_table;', [input('pg_db')]) do
-      its('output') { should match /ERROR:  permission denied for schema test_schema/ }
+      its('output') { should match(/ERROR:  permission denied for schema test_schema/) }
     end
 
     describe sql.query('SET ROLE bob; INSERT INTO test_schema.test_table VALUES (0);', [input('pg_db')]) do
-      its('output') { should match /ERROR:  permission denied for schema test_schema/ }
+      its('output') { should match(/ERROR:  permission denied for schema test_schema/) }
     end
 
     describe sql.query('SET ROLE bob; UPDATE test_schema.test_table SET id = 1 WHERE id = 0;', [input('pg_db')]) do
-      its('output') { should match /ERROR:  permission denied for schema test_schema/ }
+      its('output') { should match(/ERROR:  permission denied for schema test_schema/) }
     end
 
     describe sql.query('SET ROLE bob; DROP TABLE test_schema.test_table;', [input('pg_db')]) do
-      its('output') { should match /ERROR:  permission denied for schema test_schema/ }
+      its('output') { should match(/ERROR:  permission denied for schema test_schema/) }
     end
 
     describe sql.query('SET ROLE bob; DROP SCHEMA test_schema;', [input('pg_db')]) do
-      its('output') { should match /ERROR:  must be owner of schema test_schema/ }
+      its('output') { should match(/ERROR:  must be owner of schema test_schema/) }
     end
 
     describe sql.query('DROP ROLE bob;', [input('pg_db')]) do
+      its('output') { should match(/DROP ROLE/) }
     end
 
     describe command("grep -r \"permission denied for schema test_schema\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied for schema test_schema.*$/ }
+      its('stdout') { should match(/^.*permission denied for schema test_schema.*$/) }
     end
 
     describe command("grep -r \"must be owner of schema test_schema\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*must be owner of schema test_schema.*$/ }
+      its('stdout') { should match(/^.*must be owner of schema test_schema.*$/) }
     end
 
   else

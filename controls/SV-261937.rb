@@ -44,7 +44,7 @@ If PostgreSQL is not at the latest version and the evaluated version has CVEs (I
   installed_postgres_version = command('psql --version').stdout.split[2]
 
   # If no organization specified postgres version was given, check the internet for major and minor release versions
-  if (min_org_allowed_postgres_version.nil? || min_org_allowed_postgres_version.empty?)
+  if min_org_allowed_postgres_version.nil? || min_org_allowed_postgres_version.empty?
     describe "Your installed Postgres version is: #{installed_postgres_version}. You must review this control manually or set / pass the 'min_org_allowed_postgres_version' to the profile. The latest supported releases can be found at http://www.postgresql.org/support/versioning/" do
       skip "Your installed Postgres version is: #{installed_postgres_version}. You must review this control manually or set / pass the 'min_org_allowed_postgres_version' to the profile. The latest supported releases can be found at http://www.postgresql.org/support/versioning/"
     end

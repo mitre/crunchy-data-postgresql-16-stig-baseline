@@ -41,18 +41,19 @@ APPENDIX-C for instructions on enabling logging.'
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('DROP ROLE IF EXISTS bob; CREATE ROLE bob; CREATE TABLE test(id INT);', [input('pg_db')]) do
-      its('output') { should match /CREATE TABLE/ }
+      its('output') { should match(/CREATE TABLE/) }
     end
 
     describe sql.query('SET ROLE bob; GRANT ALL PRIVILEGES ON test TO bob;', [input('pg_db')]) do
-      its('output') { should match /\[sudo\] password for .*: ERROR:  permission denied for (relation|table) test/ }
+      its('output') { should match(/\[sudo\] password for .*: ERROR:  permission denied for (relation|table) test/) }
     end
 
     describe command("grep -r \"permission denied for relation\\|table test\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied for (relation|table) test.*$/ }
+      its('stdout') { should match(/^.*permission denied for (relation|table) test.*$/) }
     end
 
     describe sql.query('DROP ROLE bob; DROP TABLE "test" CASCADE', [input('pg_db')]) do
+      its('output') { should match(/DROP/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

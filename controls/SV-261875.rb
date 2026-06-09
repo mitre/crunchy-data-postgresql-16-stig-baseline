@@ -4,7 +4,7 @@ control 'SV-261875' do
 
 To ensure the veracity of audit data, the information system and/or the application must protect audit information from any and all unauthorized access. This includes read, write, copy, etc.
 
-This requirement can be achieved through multiple methods which will depend upon system architecture and design. Some commonly employed methods include ensuring log files enjoy the proper file system permissions using file system protections and limiting log data location. 
+This requirement can be achieved through multiple methods which will depend upon system architecture and design. Some commonly employed methods include ensuring log files enjoy the proper file system permissions using file system protections and limiting log data location.
 
 Additionally, applications with user interfaces to audit records should not allow for the unfettered manipulation of or access to those records via the application. If the application provides access to the audit data, the application becomes accountable for ensuring that audit information is protected from unauthorized access.
 
@@ -38,11 +38,11 @@ total 32
 -rw-------. 1 postgres postgres 8288 Apr 11 17:36 postgresql-Mon.log
 -rw-------. 1 postgres postgres 0 Apr 9 00:00 postgresql-Sat.log
 -rw-------. 1 postgres postgres 0 Apr 10 00:00 postgresql-Sun.log
--rw-------. 1 postgres postgres 16212 Apr 7 17:05 postgresql-Thu.log 
--rw-------. 1 postgres postgres 1130 Apr 6 17:56 postgresql-Wed.log 
+-rw-------. 1 postgres postgres 16212 Apr 7 17:05 postgresql-Thu.log
+-rw-------. 1 postgres postgres 1130 Apr 6 17:56 postgresql-Wed.log
 
 If logs with 600 permissions do not exist in ${PGLOG?}, this is a finding.)
-  desc 'fix', %q(Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER. 
+  desc 'fix', %q(Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
 To ensure logging is enabled, see the instructions in the supplementary content APPENDIX-C.
 
@@ -78,7 +78,7 @@ $ sudo systemctl reload postgresql-${PGVER?})
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
   describe sql.query('SHOW log_file_mode;', [input('pg_db')]) do
-    its('output') { should match /0600/ }
+    its('output') { should match(/0600/) }
   end
 
   command("find #{input('pg_audit_log_dir')} -type f").stdout.split.each do |logfile|

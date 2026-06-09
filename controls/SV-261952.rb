@@ -53,31 +53,31 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query("CREATE TABLE stig_test(id INT); ALTER TABLE stig_test ENABLE ROW LEVEL SECURITY; CREATE POLICY lock_table ON stig_test USING ('postgres' = current_user); DROP POLICY lock_table ON stig_test; ALTER TABLE stig_test DISABLE ROW LEVEL SECURITY; DROP TABLE stig_test;", [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*CREATE TABLE,,,CREATE TABLE stig_test.*$/ }
+      its('stdout') { should match(/^.*CREATE TABLE,,,CREATE TABLE stig_test.*$/) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*ALTER TABLE stig_test ENABLE ROW LEVEL SECURITY.*$/ }
+      its('stdout') { should match(/^.*ALTER TABLE stig_test ENABLE ROW LEVEL SECURITY.*$/) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*CREATE POLICY lock_table ON stig_test.*$/ }
+      its('stdout') { should match(/^.*CREATE POLICY lock_table ON stig_test.*$/) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*DROP POLICY lock_table ON stig_test.*$/ }
+      its('stdout') { should match(/^.*DROP POLICY lock_table ON stig_test.*$/) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*ALTER TABLE stig_test DISABLE ROW LEVEL SECURITY.*$/ }
+      its('stdout') { should match(/^.*ALTER TABLE stig_test DISABLE ROW LEVEL SECURITY.*$/) }
     end
 
     describe command("grep -r \"AUDIT: SESSION\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*DROP TABLE stig_test.*$/ }
+      its('stdout') { should match(/^.*DROP TABLE stig_test.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

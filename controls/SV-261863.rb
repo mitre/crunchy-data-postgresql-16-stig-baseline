@@ -46,7 +46,7 @@ With pgaudit installed the following configurations can be made:
 $ sudo su - postgres
 $ vi ${PGDATA?}/postgresql.conf
 
-Add the following parameters (or edit existing parameters): 
+Add the following parameters (or edit existing parameters):
 
 pgaudit.log_catalog = 'on'
 pgaudit.log = 'read'
@@ -74,11 +74,11 @@ $ sudo systemctl reload postgresql-${PGVER?}"
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query('\\du;', [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"AUDIT\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*pg_catalog.pg_roles.*$/ }
+      its('stdout') { should match(/^.*pg_catalog.pg_roles.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

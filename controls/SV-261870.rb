@@ -50,30 +50,30 @@ $ cat ${PGLOG?}/<latest_logfile>
 < 2024-02-23 14:55:23.723 UTC psql postgres postgres 570bf307.3b0a 2024-04-11 14:55:03 EDT [local] >LOG: AUDIT: SESSION,1,1,DDL,DROP TABLE,,,DROP TABLE stig_test;,<none>
 
 If audit records exist without the outcome of the event that occurred, this is a finding.'
-  desc 'fix', %q(Using pgaudit, PostgreSQL can be configured to audit various facets of PostgreSQL. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit. 
+  desc 'fix', %q(Using pgaudit, PostgreSQL can be configured to audit various facets of PostgreSQL. Refer to supplementary content APPENDIX-B for documentation on installing pgaudit.
 
 All errors, denials, and unsuccessful requests are logged if logging is enabled. Refer to supplementary content APPENDIX-C for documentation on enabling logging.
 
 Note: The following instructions use the PGDATA and PGVER environment variables. Refer to APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.
 
-With pgaudit and logging enabled, set the configuration settings in postgresql.conf, as the database administrator (shown here as "postgres"), to the following: 
+With pgaudit and logging enabled, set the configuration settings in postgresql.conf, as the database administrator (shown here as "postgres"), to the following:
 
 $ sudo su - postgres
-$ vi ${PGDATA?}/postgresql.conf 
-pgaudit.log_catalog='on' 
-pgaudit.log_level='log' 
-pgaudit.log_parameter='on' 
-pgaudit.log_statement_once='off' 
-pgaudit.log='ddl, role, read, write' 
+$ vi ${PGDATA?}/postgresql.conf
+pgaudit.log_catalog='on'
+pgaudit.log_level='log'
+pgaudit.log_parameter='on'
+pgaudit.log_statement_once='off'
+pgaudit.log='ddl, role, read, write'
 
-Tune the following logging configurations in postgresql.conf: 
+Tune the following logging configurations in postgresql.conf:
 
 $ sudo su - postgres
-$ vi ${PGDATA?}/postgresql.conf 
-log_line_prefix = '< %m %u %d %e: >' 
-log_error_verbosity = default 
+$ vi ${PGDATA?}/postgresql.conf
+log_line_prefix = '< %m %u %d %e: >'
+log_error_verbosity = default
 
-As the system administrator, restart PostgreSQL: 
+As the system administrator, restart PostgreSQL:
 
 $ sudo systemctl reload postgresql-${PGVER?})
   impact 0.5
@@ -109,7 +109,7 @@ $ sudo systemctl reload postgresql-${PGVER?})
   end
 
   describe sql.query('show pgaudit.log_catalog') do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe sql.query('show pgaudit.log_level') do
@@ -117,7 +117,7 @@ $ sudo systemctl reload postgresql-${PGVER?})
   end
 
   describe sql.query('show pgaudit.log_parameter') do
-    its('output') { should_not match /off|false/i }
+    its('output') { should_not match(/off|false/i) }
   end
 
   describe sql.query('show pgaudit.log_statement_once') do
@@ -133,15 +133,15 @@ $ sudo systemctl reload postgresql-${PGVER?})
   end
 
   describe sql.query('SET ROLE foostigtest; INSERT INTO stig_test(id) VALUES (1);', [input('pg_db')]) do
-    its('output') { should match /\n(\[sudo\] password for .*: |)ERROR:  permission denied for (relation|table) stig_test/ }
+    its('output') { should match(/\n(\[sudo\] password for .*: |)ERROR:  permission denied for (relation|table) stig_test/) }
   end
 
   describe sql.query('SET ROLE foostigtest; ALTER TABLE stig_test DROP COLUMN name;', [input('pg_db')]) do
-    its('output') { should match /\n(\[sudo\] password for .*: |)ERROR:  must be owner of (relation|table) stig_test/ }
+    its('output') { should match(/\n(\[sudo\] password for .*: |)ERROR:  must be owner of (relation|table) stig_test/) }
   end
 
   describe sql.query('SET ROLE foostigtest; UPDATE stig_test SET id = 0 WHERE id = 1;', [input('pg_db')]) do
-    its('output') { should match /\n(\[sudo\] password for .*: |)ERROR:  permission denied for (relation|table) stig_test/ }
+    its('output') { should match(/\n(\[sudo\] password for .*: |)ERROR:  permission denied for (relation|table) stig_test/) }
   end
 
   describe sql.query('DROP TABLE stig_test;', [input('pg_db')]) do

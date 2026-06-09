@@ -50,7 +50,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
 
   sql = postgres_session(input('pg_dba'), input('pg_dba_password'), input('pg_host'), input('pg_port'))
 
-  settings = %w(ssl_cert_file ssl_key_file ssl_ca_file ssl_crl_file)
+  settings = %w[ssl_cert_file ssl_key_file ssl_ca_file ssl_crl_file]
 
   settings.each do |setting|
     file_query = sql.query("SHOW #{setting};", [input('pg_db')])
@@ -87,7 +87,7 @@ For more information on configuring PostgreSQL to use SSL, refer to supplementar
     directory = File.dirname(file)
 
     describe directory(directory) do
-      its('owner') { should match /root|#{pg_owner}/ }
+      its('owner') { should match(/root|#{pg_owner}/) }
       its('mode') { should cmp '0700' }
     end
   end

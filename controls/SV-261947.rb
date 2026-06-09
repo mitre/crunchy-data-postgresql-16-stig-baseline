@@ -45,11 +45,11 @@ Unsuccessful attempts to modify security objects can be logged if logging is ena
 
   if file(input('pg_audit_log_dir')).exist?
     describe sql.query("CREATE ROLE permdeniedtest; SET ROLE permdeniedtest; UPDATE pg_authid SET rolsuper = 't' WHERE rolname = 'permdeniedtest'; DROP ROLE IF EXISTS permdeniedtest;", [input('pg_db')]) do
-      its('output') { should match // }
+      its('output') { should match(//) }
     end
 
     describe command("grep -r \"permission denied for relation\\|table pg_authid\" #{input('pg_audit_log_dir')}") do
-      its('stdout') { should match /^.*permission denied for (relation|table) pg_authid.*$/ }
+      its('stdout') { should match(/^.*permission denied for (relation|table) pg_authid.*$/) }
     end
   else
     describe "The #{input('pg_audit_log_dir')} directory was not found. Check path for this postgres version/install to define the value for the 'input('pg_audit_log_dir')' inspec input parameter." do

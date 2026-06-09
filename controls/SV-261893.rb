@@ -10,9 +10,9 @@ Database Management Systems that do not validate certificates by performing RFC 
 To verify that a CRL file exists, as the database administrator (shown here as "postgres"), run the following:
 
 $ sudo su - postgres
-$ psql -c "SELECT CASE WHEN length(setting) > 0 
-THEN CASE WHEN substring(setting, 1, 1) = '/' 
-THEN setting 
+$ psql -c "SELECT CASE WHEN length(setting) > 0
+THEN CASE WHEN substring(setting, 1, 1) = '/'
+THEN setting
 ELSE (SELECT setting FROM pg_settings WHERE name = 'data_directory') || '/' || setting
 END
 ELSE ''
@@ -80,7 +80,7 @@ $ sudo systemctl reload postgresql-${PGVER?})
   ssl_crl_file_query = sql.query('SHOW ssl_crl_file;', [input('pg_db')])
 
   describe ssl_crl_file_query do
-    its('output') { should match /^#{input('pg_data_dir')}root\.crl$/ }
+    its('output') { should match(/^#{input('pg_data_dir')}root\.crl$/) }
   end
 
   ssl_crl_file = ssl_crl_file_query.output
