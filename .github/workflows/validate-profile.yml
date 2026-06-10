@@ -103,16 +103,11 @@ jobs:
         continue-on-error: true
         run: cat "spec/results/${PLATFORM}_${SUITE}-markdown-summary.md" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Save results summary
+      - name: Display and save results summary
         continue-on-error: true
         uses: mitre/saf_action@v1
         with:
           command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -f json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
-
-      - name: Display results summary
-        uses: mitre/saf_action@v1
-        with:
-          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json"
 
       - name: Save Test Result JSON
         uses: actions/upload-artifact@v7
