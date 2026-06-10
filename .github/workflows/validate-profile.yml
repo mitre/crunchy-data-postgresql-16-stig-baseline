@@ -49,6 +49,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-common
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get update # second update to track the new apt repository
           sudo apt-get install -y postgresql-16
 
       - name: Setup and start PostgreSQL 16
