@@ -21,7 +21,7 @@ If a tool, utility, script, or other mechanism is being used to rotate audit log
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000109-DB-000321'
   tag gid: 'V-261874'
-  tag rid: 'SV-261874r1000627_rule'
+  tag rid: 'SV-261874r1043188_rule'
   tag stig_id: 'CD16-00-001800'
   tag fix_id: 'F-65636r1000626_fix'
   tag cci: ['CCI-000140']

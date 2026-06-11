@@ -29,7 +29,7 @@ RLS policies can be very different depending on their use case. For one example 
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000314-DB-000310'
   tag gid: 'V-261913'
-  tag rid: 'SV-261913r1000744_rule'
+  tag rid: 'SV-261913r1138542_rule'
   tag stig_id: 'CD16-00-006600'
   tag fix_id: 'F-65675r1000743_fix'
   tag cci: ['CCI-002264']

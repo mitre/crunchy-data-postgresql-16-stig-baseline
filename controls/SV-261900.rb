@@ -35,7 +35,7 @@ For further SSL configurations, refer to the official documentation: https://www
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000224-DB-000384'
   tag gid: 'V-261900'
-  tag rid: 'SV-261900r1000705_rule'
+  tag rid: 'SV-261900r1043181_rule'
   tag stig_id: 'CD16-00-004900'
   tag fix_id: 'F-65662r1000704_fix'
   tag cci: ['CCI-001188']

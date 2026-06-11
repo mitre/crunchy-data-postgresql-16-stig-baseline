@@ -40,7 +40,7 @@ $ export PGPORT=5432)
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000142-DB-000094'
   tag gid: 'V-261889'
-  tag rid: 'SV-261889r1000672_rule'
+  tag rid: 'SV-261889r1043177_rule'
   tag stig_id: 'CD16-00-003500'
   tag fix_id: 'F-65651r1000671_fix'
   tag cci: ['CCI-000382']
