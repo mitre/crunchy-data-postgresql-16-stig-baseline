@@ -1,6 +1,5 @@
 ---
-# CI-specific inputs for running against PostgreSQL 16 installed via apt
-# on an Ubuntu GitHub Actions runner (unhardened, vanilla install).
+# CI-specific inputs for running against the official PostgreSQL 16 container.
 windows_runner: false
 pg_owner: 'postgres'
 pg_group: 'postgres'
@@ -10,13 +9,13 @@ pg_host: '127.0.0.1'
 pg_port: '5432'
 pg_db: 'testdb'
 pg_version: '16'
-pg_data_dir: "/var/lib/postgresql/16/main"
+pg_data_dir: "/var/lib/postgresql/data"
 pg_log_dir: "/var/log/postgresql"
 pg_audit_log_dir: "/var/log/postgresql"
-pg_conf_file: "/etc/postgresql/16/main/postgresql.conf"
+pg_conf_file: "/var/lib/postgresql/data/postgresql.conf"
 pg_user_defined_conf: ""
-pg_hba_conf_file: "/etc/postgresql/16/main/pg_hba.conf"
-pg_ident_conf_file: "/etc/postgresql/16/main/pg_ident.conf"
+pg_hba_conf_file: "/var/lib/postgresql/data/pg_hba.conf"
+pg_ident_conf_file: "/var/lib/postgresql/data/pg_ident.conf"
 pg_shared_dirs:
   - "/usr/lib/postgresql/16"
   - "/usr/lib/postgresql/16/bin"

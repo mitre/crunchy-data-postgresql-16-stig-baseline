@@ -7,19 +7,24 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  LC_ALL: "en_US.UTF-8"
+  PLATFORM: "postgres16"
+  CINC_AUDITOR_VERSION: "7.1.7"
+  CINC_AUDITOR_DEB: "cinc-auditor_7.1.7-1_amd64.deb"
+  CINC_AUDITOR_URL: "https://packages.cinc.sh/files/stable/cinc-auditor"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "testpassword"
+  POSTGRES_DB: "testdb"
+  HEIMDALL_URL: ${{ vars.SAF_HEIMDALL_URL }}
+  HEIMDALL_API_KEY: ${{ secrets.SAF_HEIMDALL_UPLOAD_KEY }}
+
 jobs:
   validate:
     name: Validate (vanilla)
     runs-on: ubuntu-latest
     env:
-      LC_ALL: "en_US.UTF-8"
-      PLATFORM: "postgres16"
       SUITE: "vanilla"
-      CINC_AUDITOR_VERSION: "7.1.7"
-      CINC_AUDITOR_DEB: "cinc-auditor_7.1.7-1_amd64.deb"
-      CINC_AUDITOR_URL: "https://packages.cinc.sh/files/stable/cinc-auditor"
-      HEIMDALL_URL: ${{ vars.SAF_HEIMDALL_URL }}
-      HEIMDALL_API_KEY: ${{ secrets.SAF_HEIMDALL_UPLOAD_KEY }}
     steps:
       # ── Checkout ────────────────────────────────────────────
       - name: Check out repository
@@ -56,15 +61,15 @@ jobs:
         run: |
           sudo systemctl start postgresql
 
-          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'testpassword';"
-          sudo -u postgres createdb testdb
+          sudo -u "$POSTGRES_USER" psql -c "ALTER USER ${POSTGRES_USER} PASSWORD '${POSTGRES_PASSWORD}';"
+          sudo -u "$POSTGRES_USER" createdb "$POSTGRES_DB"
 
           pg_isready -h 127.0.0.1 -p 5432
-          PGPASSWORD=testpassword psql -h 127.0.0.1 -U postgres -d testdb -c "SELECT version();"
+          PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT version();"
 
       - name: Resolve installed PostgreSQL version
         run: |
-          PG_FULL_VERSION=$(PGPASSWORD=testpassword psql -h 127.0.0.1 -U postgres -d testdb -tAc "SHOW server_version;")
+          PG_FULL_VERSION=$(PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SHOW server_version;")
           echo "PG_FULL_VERSION=$PG_FULL_VERSION" >> "$GITHUB_ENV"
 
       # ── Run Profile ─────────────────────────────────────────
@@ -76,6 +81,124 @@ jobs:
         run: |
           sudo cinc-auditor exec . \
             --input-file ./inputs_postgres16_ci.yml \
+            --input pg_owner="${{ env.POSTGRES_USER }}" \
+            --input pg_dba="${{ env.POSTGRES_USER }}" \
+            --input pg_dba_password="${{ env.POSTGRES_PASSWORD }}" \
+            --input pg_db="${{ env.POSTGRES_DB }}" \
+            --input pg_version="${{ env.PG_FULL_VERSION }}" \
+            --reporter cli json:spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
+            --enhanced-outcomes
+
+      # ── Process & Report Results ────────────────────────────
+      - name: Generate Markdown Summary
+        continue-on-error: true
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -f markdown -t -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-markdown-summary.md"
+
+      - name: Append summary to GitHub Step Summary
+        continue-on-error: true
+        run: cat "spec/results/${PLATFORM}_${SUITE}-markdown-summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Display and save results summary
+        continue-on-error: true
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "view summary -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -f json -o spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}-data.json"
+
+      - name: Save Test Result JSON
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.PLATFORM }}_${{ env.SUITE }}
+          path: spec/results/
+
+      - name: Upload results to Heimdall
+        continue-on-error: true
+        run: |
+          curl -# -s \
+            -F data=@spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
+            -F "filename=${{ env.PLATFORM }}_${{ env.SUITE }}-${{ env.COMMIT_SHORT_SHA }}.json" \
+            -F "public=true" \
+            -F "evaluationTags=${{ env.COMMIT_SHORT_SHA }},${{ github.repository }},${{ github.workflow }}" \
+            -H "Authorization: Api-Key ${{ env.HEIMDALL_API_KEY }}" \
+            "${{ env.HEIMDALL_URL }}/evaluations"
+
+      # ── Threshold Gate ──────────────────────────────────────
+      - name: Ensure the scan meets our vanilla threshold
+        uses: mitre/saf_action@v1
+        with:
+          command_string: "validate threshold -i spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json -F vanilla.threshold.yml"
+
+  validate-container:
+    name: Validate (vanilla container)
+    runs-on: ubuntu-latest
+    env:
+      SUITE: "vanilla_container"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      # ── Checkout ────────────────────────────────────────────
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set short git commit SHA
+        run: |
+          echo "COMMIT_SHORT_SHA=$(git rev-parse --short "${{ github.sha }}")" >> "$GITHUB_ENV"
+
+      # ── Install Scanner ─────────────────────────────────────
+      - name: Install CINC Auditor
+        run: |
+          curl -fsSL -o /tmp/${{ env.CINC_AUDITOR_DEB }} \
+            "${{ env.CINC_AUDITOR_URL }}/${{ env.CINC_AUDITOR_VERSION }}/ubuntu/24.04/${{ env.CINC_AUDITOR_DEB }}"
+          sudo dpkg -i /tmp/${{ env.CINC_AUDITOR_DEB }}
+          rm /tmp/${{ env.CINC_AUDITOR_DEB }}
+
+      - name: Print CINC Auditor version
+        run: cinc-auditor version
+
+      - name: Vendor the Profile
+        run: cinc-auditor vendor . --overwrite
+
+      # ── Verify Target ───────────────────────────────────────
+      - name: Verify PostgreSQL 16 service
+        run: |
+          docker exec "${{ job.services.postgres.id }}" pg_isready -U "${{ env.POSTGRES_USER }}" -d "${{ env.POSTGRES_DB }}"
+          docker exec \
+            -e PGPASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+            "${{ job.services.postgres.id }}" \
+            psql -h 127.0.0.1 -U "${{ env.POSTGRES_USER }}" -d "${{ env.POSTGRES_DB }}" -c "SELECT version();"
+
+      - name: Resolve container PostgreSQL version
+        run: |
+          PG_FULL_VERSION=$(docker exec -e PGPASSWORD="${{ env.POSTGRES_PASSWORD }}" "${{ job.services.postgres.id }}" psql -h 127.0.0.1 -U "${{ env.POSTGRES_USER }}" -d "${{ env.POSTGRES_DB }}" -tAc "SHOW server_version;")
+          echo "PG_FULL_VERSION=$PG_FULL_VERSION" >> "$GITHUB_ENV"
+
+      # ── Run Profile ─────────────────────────────────────────
+      - name: Create results directory
+        run: mkdir -p spec/results
+
+      - name: Run the InSpec profile
+        continue-on-error: true
+        run: |
+          sudo cinc-auditor exec . \
+            -t docker://${{ job.services.postgres.id }} \
+            --input-file ./inputs_postgres16_container_ci.yml \
+            --input pg_owner="${{ env.POSTGRES_USER }}" \
+            --input pg_dba="${{ env.POSTGRES_USER }}" \
+            --input pg_dba_password="${{ env.POSTGRES_PASSWORD }}" \
+            --input pg_db="${{ env.POSTGRES_DB }}" \
             --input pg_version="${{ env.PG_FULL_VERSION }}" \
             --reporter cli json:spec/results/${{ env.PLATFORM }}_${{ env.SUITE }}.json \
             --enhanced-outcomes
