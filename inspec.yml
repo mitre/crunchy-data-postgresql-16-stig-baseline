@@ -130,9 +130,9 @@ inputs:
     value: "UTC"
 
   - name: approved_auth_methods
-    description: "V-261858, V-261859, V-261890 uses this list of approved authentication methods (e.g., per STIG, these are only: gss, sspi, or ldap)"
+    description: "V-261858, V-261859, V-261890 uses this list of approved authentication methods (e.g., per STIG, these are only: gss, sspi, ldap, or cert)"
     type: array
-    value: ['gss', 'sspi', 'ldap']
+    value: ['gss', 'sspi', 'ldap', 'cert']
     required: true
     
   - name: approved_packages
