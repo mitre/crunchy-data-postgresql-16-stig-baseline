@@ -1,16 +1,17 @@
 ---
+# CI-specific inputs for running against the official PostgreSQL 16 container.
 windows_runner: false
 pg_owner: 'postgres'
 pg_group: 'postgres'
 pg_dba: 'postgres'
 pg_dba_password: 'testpassword'
-pg_host: 'localhost'
+pg_host: '127.0.0.1'
 pg_port: '5432'
 pg_db: 'testdb'
-pg_version: '16.8'
-pg_data_dir: "/var/lib/postgresql/data/"
+pg_version: '16'
+pg_data_dir: "/var/lib/postgresql/data"
 pg_log_dir: "/var/log/postgresql"
-pg_audit_log_dir: "/var/log/postgresql/pg_log/"
+pg_audit_log_dir: "/var/log/postgresql"
 pg_conf_file: "/var/lib/postgresql/data/postgresql.conf"
 pg_user_defined_conf: ""
 pg_hba_conf_file: "/var/lib/postgresql/data/pg_hba.conf"
@@ -38,18 +39,15 @@ approved_auth_methods:
   - 'gss'
   - 'sspi'
   - 'ldap'
-  - 'cert clientcert=verify-full'
-pgaudit_installation: '/usr/lib/postgresql/14/lib/bitcode/pgaudit'
+  - 'cert'
+approved_packages:
+  - 'postgresql-16'
+approved_ext:
+  - ''
+pgaudit_installation: '/usr/lib/postgresql/16/lib/pgaudit'
 pg_max_connections: 100
 pg_timezone: 'UTC'
 pg_object_granted_privileges: 'arwdDxt'
 pg_object_public_privileges: 'rw'
-approved_packages:
-  - 'postgresql16-server.x86_64'
-  - 'postgresql16-libs.x86_64'
-  - 'postgresql16-contrib.x86_64'
-  - 'postgresql16.x86_64'
-approved_ext: 
-  - ''
 pg_object_exceptions:
-  - 'pg_setting'
+  - 'pg_settings'

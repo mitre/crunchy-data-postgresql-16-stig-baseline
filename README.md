@@ -3,7 +3,7 @@ This InSpec Profile was created to facilitate testing and auditing of `Crunchy D
 infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/)
 requirements.
 
-- Profile Version: **1.1.0**
+- Profile Version: **1.1.1**
 - Benchmark Date: **13 Jun 2024**
 - Benchmark Version: **Version 1 Release 1 (V1R1)**
 
@@ -114,9 +114,9 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 
 ```yaml
   windows_runner: false
-  pg_owner: 'testuser'
-  pg_group: ''
-  pg_dba: 'testuser'
+  pg_owner: 'postgres'
+  pg_group: 'postgres'
+  pg_dba: 'postgres'
   pg_dba_password: 'testpassword'
   pg_host: 'localhost'
   pg_port: '5432'
@@ -128,7 +128,7 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 #### Required tailoring
 To be able to connect to the database for testing, some inputs are required, including:
 ```yaml
-  pg_dba: 'testuser'
+  pg_dba: 'postgres'
   pg_dba_password: 'testpassword'
   pg_db: 'testdb'
   ...
@@ -164,20 +164,26 @@ Chef InSpec Resources:
 The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
 
 #### Testing against a Local Postgres Container
-As a developer or someone wanting to test the profile without an existing database target, there are files available to start up a docker container with a test PostgreSQL 2016 database instance. Starting this requires the runner to have InSpec or CINC Auditor installed, psql, and docker.
+As a developer or someone wanting to test the profile without an existing database target, you can start a PostgreSQL 16 container. Starting this requires the runner to have InSpec or CINC Auditor installed and docker.
 To pull the container image, run:
 ```bash
-docker pull
+docker pull postgres:16
 ```
 
 To start the container, run:
 ```bash
-docker compose up -D
+docker run -d \
+  --name test_postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=testpassword \
+  -e POSTGRES_DB=testdb \
+  -p 5432:5432 \
+  postgres:16
 ```
 
 To run the InSpec profile against the test database, run:
 ```bash
-inspec exec ./ --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
+inspec exec ./ -t docker://test_postgres --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
 ```
 
 #### Requirements
@@ -278,25 +284,4 @@ Additionally both Heimdall applications can be deployed via docker, kubernetes, 
 
 [STIG support by DISA Risk Management Team and Cyber Exchange](https://public.cyber.mil/)
 
-[MITRE Security Automation Framework Team](https://saf.mitre.org)
-
-## NOTICE
-
-© 2018-2025 The MITRE Corporation.
-
-Approved for Public Release; Distribution Unlimited. Case Number 18-3678.
-
-## NOTICE 
-
-MITRE hereby grants express written permission to use, reproduce, distribute, modify, and otherwise leverage this software to the extent permitted by the licensed terms provided in the LICENSE.md file included with this project.
-
-## NOTICE  
-
-This software was produced for the U. S. Government under Contract Number HHSM-500-2012-00008I, and is subject to Federal Acquisition Regulation Clause 52.227-14, Rights in Data-General.  
-
-No other use other than that granted to the U. S. Government, or to those acting on behalf of the U. S. Government under that Clause is authorized without the express written permission of The MITRE Corporation.
-
-For further information, please contact The MITRE Corporation, Contracts Management Office, 7515 Colshire Drive, McLean, VA  22102-7539, (703) 983-6000.
-
-## NOTICE
-[DISA STIGs are published by DISA IASE](https://public.cyber.mil/stigs/)
+[MITRE Security Automation Framework Team](https://saf.mitre.org) - saf@mitre.org
