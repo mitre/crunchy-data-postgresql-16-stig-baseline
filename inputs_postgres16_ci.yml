@@ -40,6 +40,7 @@ approved_auth_methods:
   - 'gss'
   - 'sspi'
   - 'ldap'
+  - 'cert'
 approved_packages:
   - 'postgresql-16'
 approved_ext:
