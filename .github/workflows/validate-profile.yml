@@ -54,23 +54,10 @@ jobs:
 
       - name: Setup and start PostgreSQL 16
         run: |
-          sudo pg_ctlcluster 16 main start || true
           sudo systemctl start postgresql
 
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'testpassword';"
-          sudo -u postgres psql -c "CREATE DATABASE testdb;"
-
-          printf '%s\n' \
-            'local   all   postgres                peer' \
-            'local   all   all                     scram-sha-256' \
-            'host    all   all       127.0.0.1/32  scram-sha-256' \
-            'host    all   all       ::1/128       scram-sha-256' \
-            | sudo tee /etc/postgresql/16/main/pg_hba.conf > /dev/null
-
-          sudo sed -i "s/^#\?listen_addresses.*/listen_addresses = 'localhost'/" /etc/postgresql/16/main/postgresql.conf
-          sudo sed -i "s/^#\?password_encryption.*/password_encryption = 'scram-sha-256'/" /etc/postgresql/16/main/postgresql.conf
-
-          sudo systemctl restart postgresql
+          sudo -u postgres createdb testdb
 
           pg_isready -h 127.0.0.1 -p 5432
           PGPASSWORD=testpassword psql -h 127.0.0.1 -U postgres -d testdb -c "SELECT version();"
