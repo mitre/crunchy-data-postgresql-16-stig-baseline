@@ -30,10 +30,10 @@ bundle exec rake lint:auto_correct
 bundle exec rake pre_commit_checks
 
 # Start a local test PostgreSQL 16 container
-docker compose up -d
+docker run -d --name test_postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=testpassword -e POSTGRES_DB=testdb -p 5432:5432 postgres:16
 
 # Run the profile against a target database
-inspec exec ./ --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
+inspec exec ./ -t docker://test_postgres --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
 
 # Run from remote
 bundle exec cinc-auditor exec https://github.com/mitre/crunchy-data-postgresql-16-stig-baseline/archive/main.tar.gz \
@@ -107,9 +107,9 @@ Path inputs default to RHEL/CentOS layout (`/var/lib/pgsql/16/data/`). The examp
 
 Provides a `CustomHelpers` module with `report_result` — a helper for structured test output that wraps assertions with OK/FAILED reporting. Included globally via `Inspec::ProfileContext`.
 
-### Local Test Environment (`docker-compose.yml` + `init.sql`)
+### Local Test Environment
 
-A minimal PostgreSQL 16 container with user `testuser`/`testpassword` and database `testdb`. The `init.sql` seeds a simple `users` table. Use `inputs_postgres16_example.yml` to run the profile against this container.
+A minimal PostgreSQL 16 container with user `postgres`/`testpassword` and database `testdb`. Use `inputs_postgres16_example.yml` to run the profile against this container.
 
 ## RuboCop Configuration
 

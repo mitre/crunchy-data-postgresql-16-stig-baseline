@@ -114,9 +114,9 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 
 ```yaml
   windows_runner: false
-  pg_owner: 'testuser'
-  pg_group: ''
-  pg_dba: 'testuser'
+  pg_owner: 'postgres'
+  pg_group: 'postgres'
+  pg_dba: 'postgres'
   pg_dba_password: 'testpassword'
   pg_host: 'localhost'
   pg_port: '5432'
@@ -128,7 +128,7 @@ For more information on developing overlays, reference the [MITRE SAF Training](
 #### Required tailoring
 To be able to connect to the database for testing, some inputs are required, including:
 ```yaml
-  pg_dba: 'testuser'
+  pg_dba: 'postgres'
   pg_dba_password: 'testpassword'
   pg_db: 'testdb'
   ...
@@ -164,20 +164,26 @@ Chef InSpec Resources:
 The Gemfile provided contains all the necessary ruby dependencies for checking the profile controls.
 
 #### Testing against a Local Postgres Container
-As a developer or someone wanting to test the profile without an existing database target, there are files available to start up a docker container with a test PostgreSQL 2016 database instance. Starting this requires the runner to have InSpec or CINC Auditor installed, psql, and docker.
+As a developer or someone wanting to test the profile without an existing database target, you can start a PostgreSQL 16 container. Starting this requires the runner to have InSpec or CINC Auditor installed and docker.
 To pull the container image, run:
 ```bash
-docker pull
+docker pull postgres:16
 ```
 
 To start the container, run:
 ```bash
-docker compose up -D
+docker run -d \
+  --name test_postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=testpassword \
+  -e POSTGRES_DB=testdb \
+  -p 5432:5432 \
+  postgres:16
 ```
 
 To run the InSpec profile against the test database, run:
 ```bash
-inspec exec ./ --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
+inspec exec ./ -t docker://test_postgres --input-file ./inputs_postgres16_example.yml --reporter cli json:./results/file.json
 ```
 
 #### Requirements
