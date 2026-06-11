@@ -284,4 +284,4 @@ Additionally both Heimdall applications can be deployed via docker, kubernetes, 
 
 [STIG support by DISA Risk Management Team and Cyber Exchange](https://public.cyber.mil/)
 
-[MITRE Security Automation Framework Team](https://saf.mitre.org)
+[MITRE Security Automation Framework Team](https://saf.mitre.org) - saf@mitre.org
