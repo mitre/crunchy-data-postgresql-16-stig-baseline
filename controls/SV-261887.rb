@@ -36,20 +36,14 @@ $ sudo apt-get remove <package_name>'
   tag cci: ['CCI-000381']
   tag nist: ['CM-7 a']
 
-  if os.debian?
-    dpkg_packages = command('dpkg --get-selections | grep "postgres"').stdout.tr('install', '').split("\n")
-    dpkg_packages.each do |packages|
-      describe(packages) do
-        it { should be_in input('approved_packages') }
-      end
-    end
 
-  elsif os.linux? || os.redhat?
-    yum_packages = command('yum list installed | grep "postgres" | cut -d " " -f1').stdout.strip.tr(' ', '').split("\n")
-    yum_packages.each do |packages|
-      describe(packages) do
-        it { should be_in input('approved_packages') }
-      end
-    end
+  expected = input('approved_packages')
+  actual = packages(/postgres/).names
+
+  failing = actual - expected
+
+  describe "The list of Postgres packages that were not in the allowlist" do
+    subject {failing}
+    it {should be_empty}
   end
 end

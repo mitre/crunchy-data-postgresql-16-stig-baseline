@@ -3,9 +3,9 @@ This InSpec Profile was created to facilitate testing and auditing of `Crunchy D
 infrastructure and applications when validating compliancy with [Department of Defense (DoD) STIG](https://public.cyber.mil/stigs/)
 requirements.
 
-- Profile Version: **1.1.1**
-- Benchmark Date: **13 Jun 2024**
-- Benchmark Version: **Version 1 Release 1 (V1R1)**
+- Profile Version: **1.3.0**
+- Benchmark Date: **01 Jul 2026**
+- Benchmark Version: **Version 1 Release 3 (V1R3)**
 
 
 This profile was developed to reduce the time it takes to perform a security checks based upon the

@@ -45,7 +45,7 @@ APPENDIX-C for instructions on enabling logging.'
     end
 
     describe sql.query('SET ROLE bob; GRANT ALL PRIVILEGES ON test TO bob;', [input('pg_db')]) do
-      its('output') { should match(/\[sudo\] password for .*: ERROR:  permission denied for (relation|table) test/) }
+      its('output') { should match(/ERROR:\s+permission denied for (relation|table) test/) }
     end
 
     describe command("grep -r \"permission denied for relation\\|table test\" #{input('pg_audit_log_dir')}") do
