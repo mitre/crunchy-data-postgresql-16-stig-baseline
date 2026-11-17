@@ -19,7 +19,7 @@ If the procedures exist, inquire if the system has ever run out of audit trail s
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000109-DB-000049'
   tag gid: 'V-261873'
-  tag rid: 'SV-261873r1000624_rule'
+  tag rid: 'SV-261873r1043188_rule'
   tag stig_id: 'CD16-00-001700'
   tag fix_id: 'F-65635r1000623_fix'
   tag cci: ['CCI-000140']

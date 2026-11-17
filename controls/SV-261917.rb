@@ -24,7 +24,7 @@ If PostgreSQL audit records are not written directly to or systematically transf
 
 To ensure logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.
 
-With logging enabled, as the database owner {shown here as "postgres"} configure the following parameters in postgresql.conf:
+With logging enabled, as the database owner (shown here as "postgres"), configure the following parameters in postgresql.conf:
 
 Note: Consult the organization on how syslog facilities are defined in the syslog daemon configuration.
 

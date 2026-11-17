@@ -36,7 +36,7 @@ If PostgreSQL is not at the latest version and the evaluated version has CVEs (I
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000456-DB-000390'
   tag gid: 'V-261936'
-  tag rid: 'SV-261936r1000963_rule'
+  tag rid: 'SV-261936r1137667_rule'
   tag stig_id: 'CD16-00-009200'
   tag fix_id: 'F-65698r1000812_fix'
   tag cci: ['CCI-002605']

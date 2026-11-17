@@ -38,7 +38,7 @@ For each PostgreSQL-managed account that is not documented and approved, either 
   tag severity: 'high'
   tag gtitle: 'SRG-APP-000023-DB-000001'
   tag gid: 'V-261858'
-  tag rid: 'SV-261858r1000953_rule'
+  tag rid: 'SV-261858r1043176_rule'
   tag stig_id: 'CD16-00-000200'
   tag fix_id: 'F-65620r1000578_fix'
   tag cci: ['CCI-000015']

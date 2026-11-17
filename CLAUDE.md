@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a MITRE SAF InSpec profile that validates Crunchy Data PostgreSQL 16 against the DISA STIG (Security Technical Implementation Guide). It contains 111 automated security controls (SV-261857 through SV-261967) that run SQL queries, shell commands, and file checks against a target PostgreSQL 16 instance to assess compliance.
+This is a MITRE SAF InSpec profile that validates Crunchy Data PostgreSQL 16 against the DISA STIG (Security Technical Implementation Guide). It contains 111 security controls (SV-261857 through SV-261967, with SV-283674 replacing SV-261937) that run SQL queries, shell commands, and file checks against a target PostgreSQL 16 instance to assess compliance.
 
-- **Profile Version:** 1.1.0
-- **Benchmark:** Crunchy Data PostgreSQL 16 STIG V1R1 (13 Jun 2024)
+- **Profile Version:** 1.3.0
+- **Benchmark:** Crunchy Data PostgreSQL 16 STIG V1R3 (01 Jul 2026)
 - **InSpec version:** >= 4.0
 - **Runtime:** CINC Auditor (open-source InSpec) or Chef InSpec
 

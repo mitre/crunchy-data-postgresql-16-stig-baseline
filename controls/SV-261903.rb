@@ -22,7 +22,7 @@ fails to remove any copies of production data from unprotected locations, this i
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000243-DB-000128'
   tag gid: 'V-261903'
-  tag rid: 'SV-261903r1000714_rule'
+  tag rid: 'SV-261903r1137656_rule'
   tag stig_id: 'CD16-00-005400'
   tag fix_id: 'F-65665r1000713_fix'
   tag cci: ['CCI-001090']

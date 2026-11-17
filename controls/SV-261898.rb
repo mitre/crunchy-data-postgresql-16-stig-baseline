@@ -31,7 +31,7 @@ ALTER ROLE <username> NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS;'
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000211-DB-000122'
   tag gid: 'V-261898'
-  tag rid: 'SV-261898r1000699_rule'
+  tag rid: 'SV-261898r1137655_rule'
   tag stig_id: 'CD16-00-004600'
   tag fix_id: 'F-65660r1000698_fix'
   tag cci: ['CCI-001082']

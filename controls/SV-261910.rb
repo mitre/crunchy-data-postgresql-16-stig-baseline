@@ -46,7 +46,7 @@ This script would be added to a cron job:
   tag severity: 'medium'
   tag gtitle: 'SRG-APP-000295-DB-000305'
   tag gid: 'V-261910'
-  tag rid: 'SV-261910r1000735_rule'
+  tag rid: 'SV-261910r1043182_rule'
   tag stig_id: 'CD16-00-006200'
   tag fix_id: 'F-65672r1000734_fix'
   tag cci: ['CCI-002361']
